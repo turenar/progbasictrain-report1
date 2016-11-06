@@ -1,3 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
-autoreconf -i
+cd "$(dirname "$0")"
+autoreconf -i "$@"
