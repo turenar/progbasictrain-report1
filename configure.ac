@@ -35,10 +35,10 @@ else
 	CFLAGS="-g -O2${CFLAGS:+ }${CFLAGS-}"
 fi
 
-AX_CHECK_COMPILE_FLAG([-Wall], [AX_APPEND_FLAG([-Wall], [CFLAGS])], [])
-AX_CHECK_COMPILE_FLAG([-Wextra], [AX_APPEND_FLAG([-Wextra], [CFLAGS])], [])
-AX_CHECK_COMPILE_FLAG([-Wconversion], [AX_APPEND_FLAG([-Wconversion], [CFLAGS])], [])
-AX_CHECK_COMPILE_FLAG([-pedantic], [AX_APPEND_FLAG([-pedantic], [CFLAGS])], [])
+AX_CHECK_COMPILE_FLAG([-Wall], [AX_APPEND_FLAG([-Wall], [warn_flags])], [])
+AX_CHECK_COMPILE_FLAG([-Wextra], [AX_APPEND_FLAG([-Wextra], [warn_flags])], [])
+AX_CHECK_COMPILE_FLAG([-Wconversion], [AX_APPEND_FLAG([-Wconversion], [warn_flags])], [])
+AX_CHECK_COMPILE_FLAG([-pedantic], [AX_APPEND_FLAG([-pedantic], [warn_flags])], [])
 
 # Checks for libraries.
 
@@ -48,5 +48,6 @@ AX_CHECK_COMPILE_FLAG([-pedantic], [AX_APPEND_FLAG([-pedantic], [CFLAGS])], [])
 
 # Checks for library functions.
 AC_SUBST([CFLAGS])
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_SUBST([warn_flags])
+AC_CONFIG_FILES([Makefile externals/Makefile src/Makefile test/Makefile])
 AC_OUTPUT

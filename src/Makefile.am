@@ -1,3 +1,4 @@
+AM_CFLAGS = $(warn_flags)
 bin_PROGRAMS = noiser
 noinst_LIBRARIES = libnoiser_core.a
 
