@@ -14,7 +14,8 @@ typedef enum {
 	PBM_INVALID_HEADER,
 	PBM_LACK_DATA,
 	PBM_INVALID_DATA,
-	PBM_SYSTEM_ERROR
+	PBM_SYSTEM_ERROR,
+	PBMFILTER_INVALID_ARG,
 } pbm_error_t;
 
 void pbm_init(pbm_info*, int width, int height);

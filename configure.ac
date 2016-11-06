@@ -31,8 +31,10 @@ AC_ARG_ENABLE(debug,
 	[debug=false])
 if test "$debug" = true; then
 	CFLAGS="-g -Og${CFLAGS:+ }${CFLAGS-}"
+	AC_DEFINE([_DEBUG], [], [Debug mode])
 else
 	CFLAGS="-g -O2${CFLAGS:+ }${CFLAGS-}"
+	AC_DEFINE([NDEBUG], [], [Release mode])
 fi
 
 AX_CHECK_COMPILE_FLAG([-Wall], [AX_APPEND_FLAG([-Wall], [warn_flags])], [])
