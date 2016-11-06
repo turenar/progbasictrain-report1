@@ -3,13 +3,13 @@
 #include <stdio.h>
 #include <stdint.h>
 
-typedef struct _pbm_info {
+typedef struct {
 	int width;
 	int height;
 	uint8_t** data;
 } pbm_info;
 
-typedef enum _pbm_error {
+typedef enum {
 	PBM_SUCCESS = 0,
 	PBM_INVALID_HEADER,
 	PBM_LACK_DATA,

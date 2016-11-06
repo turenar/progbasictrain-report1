@@ -6,26 +6,29 @@
 #define testdatadir "data"
 #endif
 
-#define PBM_LOAD_FROM(file) pbm_load(&info, fopen(testdatadir "/" file, "r"))
-
 static int check_file_equals(FILE*, FILE*);
 
 static void test_pbm_load(CuTest* tc) {
+#define CHECK_PBM_LOAD1(expected, file) { \
+    FILE* fp = fopen(file, "r"); \
+        if(!fp){CuFail(tc,"Could not load: " file);} \
+        else{ CuAssertIntEquals(tc, expected, pbm_load(&info, fp));}}
+#define CHECK_PBM_LOAD(expected, file) CHECK_PBM_LOAD1(expected, testdatadir "/" file)
 	pbm_info info;
-	CuAssertIntEquals(tc, PBM_INVALID_HEADER, PBM_LOAD_FROM("pbm/01_empty.pbm"));
-	CuAssertIntEquals(tc, PBM_INVALID_HEADER, PBM_LOAD_FROM("pbm/01_invalid_sig1.pbm"));
-	CuAssertIntEquals(tc, PBM_INVALID_HEADER, PBM_LOAD_FROM("pbm/01_invalid_sig2.pbm"));
-	CuAssertIntEquals(tc, PBM_INVALID_HEADER, PBM_LOAD_FROM("pbm/02_extra_header.pbm"));
-	CuAssertIntEquals(tc, PBM_INVALID_HEADER, PBM_LOAD_FROM("pbm/02_minus_size.pbm"));
-	CuAssertIntEquals(tc, PBM_INVALID_HEADER, PBM_LOAD_FROM("pbm/02_no_height.pbm"));
-	CuAssertIntEquals(tc, PBM_INVALID_HEADER, PBM_LOAD_FROM("pbm/02_no_width.pbm"));
-	CuAssertIntEquals(tc, PBM_SUCCESS, PBM_LOAD_FROM("pbm/03_extra_data.pbm"));
-	CuAssertIntEquals(tc, PBM_SUCCESS, PBM_LOAD_FROM("pbm/03_extra_row.pbm"));
-	CuAssertIntEquals(tc, PBM_LACK_DATA, PBM_LOAD_FROM("pbm/03_lack_data.pbm"));
-	CuAssertIntEquals(tc, PBM_LACK_DATA, PBM_LOAD_FROM("pbm/03_lack_row.pbm"));
-	CuAssertIntEquals(tc, PBM_INVALID_DATA, PBM_LOAD_FROM("pbm/03_invalid_data.pbm"));
-	CuAssertIntEquals(tc, PBM_SUCCESS, PBM_LOAD_FROM("pbm/04_crlf.pbm"));
-	CuAssertIntEquals(tc, PBM_SUCCESS, PBM_LOAD_FROM("pbm/04_lf.pbm"));
+	CHECK_PBM_LOAD(PBM_INVALID_HEADER, "pbm/01_empty.pbm")
+	CHECK_PBM_LOAD(PBM_INVALID_HEADER, "pbm/01_invalid_sig1.pbm")
+	CHECK_PBM_LOAD(PBM_INVALID_HEADER, "pbm/01_invalid_sig2.pbm")
+	CHECK_PBM_LOAD(PBM_INVALID_HEADER, "pbm/02_extra_header.pbm")
+	CHECK_PBM_LOAD(PBM_INVALID_HEADER, "pbm/02_minus_size.pbm")
+	CHECK_PBM_LOAD(PBM_INVALID_HEADER, "pbm/02_no_height.pbm")
+	CHECK_PBM_LOAD(PBM_INVALID_HEADER, "pbm/02_no_width.pbm")
+	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/03_extra_data.pbm")
+	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/03_extra_row.pbm")
+	CHECK_PBM_LOAD(PBM_LACK_DATA, "pbm/03_lack_data.pbm")
+	CHECK_PBM_LOAD(PBM_LACK_DATA, "pbm/03_lack_row.pbm")
+	CHECK_PBM_LOAD(PBM_INVALID_DATA, "pbm/03_invalid_data.pbm")
+	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/04_crlf.pbm")
+	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/04_lf.pbm")
 }
 
 static void test_pbm_write(CuTest* tc) {
@@ -39,6 +42,17 @@ static void test_pbm_write(CuTest* tc) {
 	fseek(rfp, 0, SEEK_SET);
 	fseek(wfp, 0, SEEK_SET);
 	CuAssertIntEquals(tc, 1, check_file_equals(rfp, wfp));
+}
+
+static void test_pbm_free(CuTest* tc) {
+	pbm_info info = {0, 0, NULL};
+	pbm_free(&info);
+	CuAssertPtrEquals(tc, NULL, info.data);
+
+	FILE* rfp = fopen(testdatadir "/pbm/04_lf.pbm", "r");
+	pbm_load(&info, rfp);
+	pbm_free(&info);
+	CuAssertPtrEquals(tc, NULL, info.data);
 }
 
 static int check_file_equals(FILE* afp, FILE* bfp) {
@@ -58,6 +72,7 @@ static CuSuite* get_pbm_test_suites() {
 	CuSuite* suite = CuSuiteNew();
 	SUITE_ADD_TEST(suite, test_pbm_load);
 	SUITE_ADD_TEST(suite, test_pbm_write);
+	SUITE_ADD_TEST(suite, test_pbm_free);
 	return suite;
 }
 

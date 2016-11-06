@@ -91,6 +91,17 @@ void pbm_write(const pbm_info* info, FILE* fp) {
 	}
 }
 
+void pbm_free(pbm_info* info) {
+	uint8_t** p = info->data;
+	for (int y = 0; y < info->height; ++y) {
+		free(*p++);
+	}
+	free(info->data);
+	info->height = -1;
+	info->width = -1;
+	info->data = NULL;
+}
+
 static pbm_error_t _pbm_extract_size_from_header(const char* str, pbm_info* info) {
 	long width, height;
 	char* endptr;
