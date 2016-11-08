@@ -128,3 +128,13 @@ static int _pbm_check_file_signature(const char* signature) {
 	       (signature[2] == '\n' ||
 	        (signature[2] == '\r' && signature[3] == '\n'));
 }
+
+void pbm_copy(const pbm_info* in, pbm_info* out) {
+	pbm_init(out, in->width, in->height);
+
+	uint8_t** in_p = in->data;
+	uint8_t** out_p = out->data;
+	for (int y = 0; y < in->height; ++y) {
+		memcpy(*out_p++, *in_p++, sizeof(uint8_t) * (size_t) in->width);
+	}
+}

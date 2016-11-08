@@ -1,0 +1,33 @@
+#include "config.inc.h"
+
+#include <stdio.h>
+#include "pbm.h"
+#include "filter/filter_icm.h"
+
+int main(int argc, char** argv) {
+	if (argc < 3) {
+		fprintf(stderr, "usage: %s <input.pbm> <output.pbm>\n", argv[0]);
+		return 1;
+	}
+
+	pbm_info input;
+	FILE* rfp = fopen(argv[1], "r");
+	if (!rfp) {
+		perror(argv[1]);
+		return 1;
+	}
+	FILE* wfp = fopen(argv[2], "w");
+	if (!wfp) {
+		perror(argv[2]);
+		return 1;
+	}
+	if (pbm_load(&input, rfp)) {
+		fprintf(stderr, "error\n");
+		return 1;
+	}
+
+	pbm_info output;
+	pbmfilter_icm(&input, &output, (const char**) argv + 3);
+	pbm_write(&output, wfp);
+	return 0;
+}

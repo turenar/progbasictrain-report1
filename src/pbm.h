@@ -22,3 +22,4 @@ void pbm_init(pbm_info*, int width, int height);
 void pbm_free(pbm_info*);
 pbm_error_t pbm_load(pbm_info*, FILE*);
 void pbm_write(const pbm_info*, FILE*);
+void pbm_copy(const pbm_info*, pbm_info*);
