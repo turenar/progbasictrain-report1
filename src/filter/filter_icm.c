@@ -1,7 +1,7 @@
 #include <pbm.h>
 #include "config.inc.h"
 
-#include "filter_icm.h"
+#include "filters.h"
 
 #define ICM_BETA 1
 #define ICM_GAMMA 5

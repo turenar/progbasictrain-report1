@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include "pbm.h"
-#include "filter/filter_icm.h"
+#include "filter/filters.h"
 
 int main(int argc, char** argv) {
 	if (argc < 3) {
