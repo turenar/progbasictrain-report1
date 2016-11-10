@@ -22,6 +22,10 @@ void log_debug(const char* file, int line, const char* fmt, ...) {
 	va_start(args, fmt);
 	log_log(file, line, "36", fmt, args);
 	va_end(args);
+#else
+	UNUSED_VAR(file);
+	UNUSED_VAR(line);
+	UNUSED_VAR(fmt);
 #endif
 }
 
