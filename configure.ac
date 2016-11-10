@@ -29,13 +29,16 @@ AC_ARG_ENABLE(debug,
 			*)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]);;
 		esac],
 	[debug=false])
+
+debug_flag="-g"
 if test "$debug" = true; then
-	CFLAGS="-g -Og${CFLAGS:+ }${CFLAGS-}"
+	AX_CHECK_COMPILE_FLAG([-Og], [AX_APPEND_FLAG([-Og], [debug_flag])], [AX_APPEND_FLAG([-O0], [debug_flag])])
 	AC_DEFINE([_DEBUG], [], [Debug mode])
 else
-	CFLAGS="-g -O2${CFLAGS:+ }${CFLAGS-}"
+	AX_APPEND_FLAG([-O2], [debug_flag])
 	AC_DEFINE([NDEBUG], [], [Release mode])
 fi
+CFLAGS="${debug_flag}${CFLAGS:+ }${CFLAGS-}"
 
 AX_CHECK_COMPILE_FLAG([-Wall], [AX_APPEND_FLAG([-Wall], [warn_flags])], [])
 AX_CHECK_COMPILE_FLAG([-Wextra], [AX_APPEND_FLAG([-Wextra], [warn_flags])], [])

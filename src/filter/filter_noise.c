@@ -2,6 +2,7 @@
 
 #include "filter_common.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include "filters.h"
 
 static uint8_t _pbmfilter_noise_point(uint8_t, void*);

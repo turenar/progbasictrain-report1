@@ -1,7 +1,7 @@
 #include "config.inc.h"
 
 #include <stdio.h>
-#include "pbm.h"
+#include "codec/codecs.h"
 #include "filter/filters.h"
 
 int main(int argc, char** argv) {
@@ -21,13 +21,13 @@ int main(int argc, char** argv) {
 		perror(argv[2]);
 		return 1;
 	}
-	if (pbm_load(&input, rfp)) {
+	if (codec_pbm_read(&input, rfp)) {
 		fprintf(stderr, "error\n");
 		return 1;
 	}
 
 	pbm_info output;
 	pbmfilter_noise(&input, &output, (const char**) argv + 3);
-	pbm_write(&output, wfp);
+	codec_pbm_write(&output, wfp);
 	return 0;
 }
