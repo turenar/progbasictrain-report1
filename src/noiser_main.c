@@ -11,12 +11,12 @@ int main(int argc, char** argv) {
 	}
 
 	pbm_info input;
-	FILE* rfp = fopen(argv[1], "r");
+	FILE* rfp = fopen(argv[1], "rb");
 	if (!rfp) {
 		perror(argv[1]);
 		return 1;
 	}
-	FILE* wfp = fopen(argv[2], "w");
+	FILE* wfp = fopen(argv[2], "wb");
 	if (!wfp) {
 		perror(argv[2]);
 		return 1;

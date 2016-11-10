@@ -43,9 +43,15 @@ CFLAGS="${debug_flag}${CFLAGS:+ }${CFLAGS-}"
 AX_CHECK_COMPILE_FLAG([-Wall], [AX_APPEND_FLAG([-Wall], [warn_flags])], [])
 AX_CHECK_COMPILE_FLAG([-Wextra], [AX_APPEND_FLAG([-Wextra], [warn_flags])], [])
 AX_CHECK_COMPILE_FLAG([-Wconversion], [AX_APPEND_FLAG([-Wconversion], [warn_flags])], [])
+AX_CHECK_COMPILE_FLAG([-Werror=implicit-function-declaration], [AX_APPEND_FLAG([-Werror=implicit-function-declaration], [warn_flags])], [])
 AX_CHECK_COMPILE_FLAG([-pedantic], [AX_APPEND_FLAG([-pedantic], [warn_flags])], [])
+AX_CHECK_LINK_FLAG([-rdynamic], [AX_APPEND_FLAG([-rdynamic], [LDFLAGS])], [])
 
 # Checks for libraries.
+
+PKG_CHECK_MODULES([libpng], [libpng], [AC_DEFINE([USE_LIBPNG], [1], [libpng])])
+AC_SUBST([libpng_CFLAGS])
+AC_SUBST([libpng_LIBS])
 
 # Checks for header files.
 
