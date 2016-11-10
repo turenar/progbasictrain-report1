@@ -1,7 +1,7 @@
 project(pbt-report1)
 
 include_directories(externals/cutest src test)
-add_library(pbmcore STATIC src/pbm.h src/pbm.c)
+add_library(pbmcore STATIC src/pbm.h src/pbm.c src/logger.c src/logger.h)
 add_library(pbmfilter STATIC
         src/filter/filter_noise.c src/filter/filter_common.h src/filter/filter_common.c
         src/filter/filter_icm.c src/filter/filters.h)

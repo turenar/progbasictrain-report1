@@ -2,7 +2,7 @@
 
 #include "filter_common.h"
 #include <stdlib.h>
-#include <stdio.h>
+#include "logger.h"
 #include "filters.h"
 
 static uint8_t _pbmfilter_noise_point(uint8_t, void*);
@@ -15,10 +15,10 @@ int pbmfilter_noise(const pbm_info* in, pbm_info* out, const char** args) {
 		char* endptr;
 		prob = strtod(args[0], &endptr);
 		if (*endptr != '\0') {
-			fprintf(stderr, "pbmfilter_noise: invalid argument[0]: not double (%s)\n", args[0]);
+			LOG(error, "invalid argument[0]: not double (%s)", args[0]);
 			return PBMFILTER_INVALID_ARG;
 		} else if (prob < 0. || 1. < prob) {
-			fprintf(stderr, "pbmfilter_noise: invalid argument[0]: not probability (%s)\n", args[0]);
+			LOG(error, "pbmfilter_noise: invalid argument[0]: not probability (%s)", args[0]);
 			return PBMFILTER_INVALID_ARG;
 		}
 	}
