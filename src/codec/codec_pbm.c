@@ -2,6 +2,7 @@
 
 #include "codecs.h"
 #include <stdlib.h>
+#include "logger.h"
 
 static int _pbm_check_file_signature(const char*);
 static pbm_error_t _pbm_extract_size_from_header(const char*, pbm_info*);
@@ -14,16 +15,18 @@ pbm_error_t codec_pbm_read(pbm_info* info, FILE* fp) {
 	// line 1: P1 header
 	res = fgets(buf, sizeof(buf), fp);
 	if (res == NULL || !_pbm_check_file_signature(buf)) {
-		return PBM_INVALID_HEADER;
+		LOG(error, "invalid signature: %s", buf);
+		return PBMCODEC_INVALID_SIGNATURE;
 	}
 	// line 2: width, height
 	res = fgets(buf, sizeof(buf), fp);
 	if (res == NULL) {
-		return PBM_INVALID_HEADER;
+		LOG(error, "unexpected eof");
+		return PBMCODEC_INVALID_HEADER;
 	}
-	int ret = _pbm_extract_size_from_header(buf, info);
+	pbm_error_t ret = _pbm_extract_size_from_header(buf, info);
 	if (ret) {
-		return PBM_INVALID_HEADER;
+		return ret;
 	}
 
 	pbm_init(info, info->width, info->height);
@@ -32,7 +35,8 @@ pbm_error_t codec_pbm_read(pbm_info* info, FILE* fp) {
 	for (int y = 0; y < info->height; ++y) {
 		res = fgets(buf, sizeof(buf), fp);
 		if (res == NULL) {
-			return PBM_LACK_DATA;
+			LOG(error, "unexpected eof [line: %d]", y + 2);
+			return PBMCODEC_INVALID_DATA;
 		}
 
 		char* str_p = buf;
@@ -42,7 +46,8 @@ pbm_error_t codec_pbm_read(pbm_info* info, FILE* fp) {
 			if (b == '0' || b == '1') {
 				*col_p++ = (uint8_t) (b - '0');
 			} else {
-				return PBM_INVALID_DATA;
+				LOG(error, "unexpected char [line: %d, col: %d]: 0x%x", y + 2, 2 * x + 1, b);
+				return PBMCODEC_INVALID_DATA;
 			}
 			char delimiter = *str_p++;
 			if (delimiter == ' ') {
@@ -50,12 +55,14 @@ pbm_error_t codec_pbm_read(pbm_info* info, FILE* fp) {
 			} else if (delimiter == '\0' || delimiter == '\n' || delimiter == '\r') {
 				// row end
 				if (x + 1 != info->width) {
-					return PBM_LACK_DATA;
+					LOG(error, "width mismatch [line: %d]", y + 2);
+					return PBMCODEC_INVALID_DATA;
 				} else {
 					continue;
 				}
 			} else {
-				return PBM_INVALID_DATA;
+				LOG(error, "unexpected delimiter [line: %d]: 0x%x", y + 2, delimiter);
+				return PBMCODEC_INVALID_DATA;
 			}
 		}
 	}
@@ -85,15 +92,18 @@ static pbm_error_t _pbm_extract_size_from_header(const char* str, pbm_info* info
 	char* endptr;
 	width = strtol(str, &endptr, 10);
 	if (*endptr++ != ' ') {
-		return PBM_INVALID_HEADER;
+		LOG(error, "invalid width");
+		return PBMCODEC_INVALID_HEADER;
 	}
 	height = strtol(endptr, &endptr, 10);
 	if (!(*endptr == '\n' || *endptr == '\r')) {
-		return PBM_INVALID_HEADER;
+		LOG(error, "invalid height");
+		return PBMCODEC_INVALID_HEADER;
 	}
 
 	if (width <= 0 || height <= 0) {
-		return PBM_INVALID_HEADER;
+		LOG(error, "invalid size: %d, %d", width, height);
+		return PBMCODEC_INVALID_HEADER;
 	}
 	info->width = (int) width;
 	info->height = (int) height;
