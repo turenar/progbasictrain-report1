@@ -8,11 +8,11 @@
 
 static int check_file_equals(FILE*, FILE*);
 
-static void test_codec_pbm_read(CuTest* tc) {
+static void test_pbmcodec_pbm_read(CuTest* tc) {
 #define CHECK_PBM_LOAD1(expected, file) { \
     FILE* fp = fopen(file, "r"); \
         if(!fp){CuFail(tc,"Could not load: " file);} \
-        else{ CuAssertIntEquals(tc, expected, codec_pbm_read(&info, fp));}}
+        else{ CuAssertIntEquals(tc, expected, pbmcodec_pbm_read(&info, fp));}}
 #define CHECK_PBM_LOAD(expected, file) CHECK_PBM_LOAD1(expected, testdatadir "/" file)
 	pbm_info info;
 	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_empty.pbm")
@@ -31,13 +31,13 @@ static void test_codec_pbm_read(CuTest* tc) {
 	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/04_lf.pbm")
 }
 
-static void test_codec_pbm_write(CuTest* tc) {
+static void test_pbmcodec_pbm_write(CuTest* tc) {
 	pbm_info info;
 	FILE* rfp = fopen(testdatadir "/pbm/04_lf.pbm", "r");
-	codec_pbm_read(&info, rfp);
+	pbmcodec_pbm_read(&info, rfp);
 
 	FILE* wfp = tmpfile();
-	codec_pbm_write(&info, wfp);
+	pbmcodec_pbm_write(&info, wfp);
 
 	fseek(rfp, 0, SEEK_SET);
 	fseek(wfp, 0, SEEK_SET);
@@ -50,7 +50,7 @@ static void test_pbm_free(CuTest* tc) {
 	CuAssertPtrEquals(tc, NULL, info.data);
 
 	FILE* rfp = fopen(testdatadir "/pbm/04_lf.pbm", "r");
-	codec_pbm_read(&info, rfp);
+	pbmcodec_pbm_read(&info, rfp);
 	pbm_free(&info);
 	CuAssertPtrEquals(tc, NULL, info.data);
 }
@@ -70,8 +70,8 @@ static int check_file_equals(FILE* afp, FILE* bfp) {
 
 static CuSuite* get_pbm_test_suites() {
 	CuSuite* suite = CuSuiteNew();
-	SUITE_ADD_TEST(suite, test_codec_pbm_read);
-	SUITE_ADD_TEST(suite, test_codec_pbm_write);
+	SUITE_ADD_TEST(suite, test_pbmcodec_pbm_read);
+	SUITE_ADD_TEST(suite, test_pbmcodec_pbm_write);
 	SUITE_ADD_TEST(suite, test_pbm_free);
 	return suite;
 }

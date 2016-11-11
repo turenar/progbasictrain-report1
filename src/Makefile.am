@@ -9,6 +9,6 @@ denoiser_SOURCES = denoiser_main.c
 denoiser_LDADD = libpbm.a $(libpng_LIBS)
 
 pbm_filters = filter/filter_common.c filter/filter_icm.c filter/filter_noise.c
-pbm_codecs = codec/codec_pbm.c codec/codec_png.c
+pbm_codecs = codec/codecs.c codec/codec_pbm.c codec/codec_png.c
 pbm_cores = pbm.c logger.c
 libpbm_a_SOURCES = $(pbm_cores) $(pbm_filters) $(pbm_codecs)

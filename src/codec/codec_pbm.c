@@ -8,7 +8,7 @@ static int _pbm_check_file_signature(const char*);
 static pbm_error_t _pbm_extract_size_from_header(const char*, pbm_info*);
 
 
-pbm_error_t codec_pbm_read(pbm_info* info, FILE* fp) {
+pbm_error_t pbmcodec_pbm_read(pbm_info* info, FILE* fp) {
 	char buf[65536];
 	char* res;
 
@@ -69,7 +69,7 @@ pbm_error_t codec_pbm_read(pbm_info* info, FILE* fp) {
 	return PBM_SUCCESS;
 }
 
-pbm_error_t codec_pbm_write(const pbm_info* info, FILE* fp) {
+pbm_error_t pbmcodec_pbm_write(const pbm_info* info, FILE* fp) {
 	fputs("P1\n", fp);
 	fprintf(fp, "%d %d\n", info->width, info->height);
 

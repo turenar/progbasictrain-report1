@@ -16,7 +16,7 @@
 static void user_warning_fn(png_structp, png_const_charp);
 static void user_error_fn(png_structp, png_const_charp);
 
-pbm_error_t codec_png_read(pbm_info* info, FILE* fp) {
+pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 	png_byte header[PNG_HEADER_BYTES];
 	if (fread(header, 1, PNG_HEADER_BYTES, fp) < sizeof(PNG_HEADER_BYTES)) {
 		LOG(error, "invalid signature");
@@ -81,7 +81,7 @@ pbm_error_t codec_png_read(pbm_info* info, FILE* fp) {
 	return PBM_SUCCESS;
 }
 
-pbm_error_t codec_png_write(const pbm_info* info, FILE* fp) {
+pbm_error_t pbmcodec_png_write(const pbm_info* info, FILE* fp) {
 	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, user_error_fn, user_warning_fn);
 	pbm_error_t result = PBM_SYSTEM_ERROR;
 

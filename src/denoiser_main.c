@@ -21,13 +21,13 @@ int main(int argc, char** argv) {
 		perror(argv[2]);
 		return 1;
 	}
-	if (codec_pbm_read(&input, rfp)) {
+	if (pbmcodec_pbm_read(&input, rfp)) {
 		fprintf(stderr, "error\n");
 		return 1;
 	}
 
 	pbm_info output;
 	pbmfilter_icm(&input, &output, (const char**) argv + 3);
-	codec_pbm_write(&output, wfp);
+	pbmcodec_pbm_write(&output, wfp);
 	return 0;
 }
