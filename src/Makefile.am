@@ -1,12 +1,12 @@
-AM_CFLAGS = $(warn_flags) $(libpng_CFLAGS) $(libsixel_CFLAGS)
+AM_CFLAGS = $(warn_flags) $(libpng_CFLAGS) $(libsixel_CFLAGS) $(gtk_CFLAGS)
 bin_PROGRAMS = noiser denoiser
 noinst_LIBRARIES = libpbm.a
 
 noiser_SOURCES = noiser_main.c
-noiser_LDADD = libpbm.a $(libpng_LIBS) $(libsixel_LIBS)
+noiser_LDADD = libpbm.a $(libpng_LIBS) $(libsixel_LIBS) $(gtk_LIBS)
 
 denoiser_SOURCES = denoiser_main.c
-denoiser_LDADD = libpbm.a $(libpng_LIBS) $(libsixel_LIBS)
+denoiser_LDADD = libpbm.a $(libpng_LIBS) $(libsixel_LIBS) $(gtk_LIBS)
 
 pbm_filters = filter/filter_common.c \
 			  filter/filter_icm.c \
@@ -14,6 +14,7 @@ pbm_filters = filter/filter_common.c \
 pbm_codecs = codec/codecs.c \
 			 codec/codec_pbm.c \
 			 codec/codec_png.c \
-			 codec/codec_sixel.c
+			 codec/codec_sixel.c \
+			 codec/codec_gtk.c
 pbm_cores = pbm.c logger.c
 libpbm_a_SOURCES = $(pbm_cores) $(pbm_filters) $(pbm_codecs)

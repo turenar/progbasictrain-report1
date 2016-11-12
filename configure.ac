@@ -93,6 +93,27 @@ fi
 AC_SUBST([libsixel_CFLAGS])
 AC_SUBST([libsixel_LIBS])
 
+AC_ARG_WITH([gtk3],
+			[AS_HELP_STRING([--with-gtk3],
+							[support png r/w, default: auto])],
+			[case "${enableval}" in
+				yes) gtk_support=true;;
+				no)  gtk_support=false;;
+				auto)gtk_support=auto;;
+				*)   AC_MSG_ERROR([bad value ${enableval} for --with-gtk]);;
+			esac],
+			[gtk_support=auto])
+if test "x$gtk_support" != xauto; then
+	: do nothing
+else
+	PKG_CHECK_MODULES([gtk], [gtk+-3.0], [has_gtk=yes], [has_gtk=no])
+	if test "x$gtk_support$has_gtk" = "xyesno"; then
+		AC_MSG_ERROR([--with-gtk requires gtk])
+	fi
+	AC_DEFINE([USE_GTK], [1], [gtk])
+fi
+AC_SUBST([gtk_CFLAGS])
+AC_SUBST([gtk_LIBS])
 # Checks for header files.
 
 # Checks for typedefs, structures, and compiler characteristics.

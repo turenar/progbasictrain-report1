@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <png.h>
-#include "pbm.h"
 #include "logger.h"
 
 #define PNG_HEADER_BYTES 8

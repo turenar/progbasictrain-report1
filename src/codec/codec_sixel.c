@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sixel.h>
-#include <pbm.h>
 #include "logger.h"
 
 pbm_error_t pbmcodec_sixel_write(const pbm_info* info, FILE* fp) {
