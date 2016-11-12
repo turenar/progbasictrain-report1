@@ -14,13 +14,24 @@ typedef struct {
 
 static pbmcodec_reader_info readers[] = {
 		{"pbm", pbmcodec_pbm_read},
+#ifdef USE_LIBPNG
 		{"png", pbmcodec_png_read},
+#endif
 		{NULL, NULL}
 };
 
 static pbmcodec_writer_info writers[] = {
 		{"pbm", pbmcodec_pbm_write},
+#ifdef USE_LIBPNG
 		{"png", pbmcodec_png_write},
+#endif
+#ifdef USE_LIBSIXEL
+		{"six", pbmcodec_sixel_write},
+		{"sixel", pbmcodec_sixel_write},
+#endif
+#ifdef USE_GTK
+		{"gdk", pbmcodec_gtk_write},
+#endif
 		{NULL, NULL}
 };
 

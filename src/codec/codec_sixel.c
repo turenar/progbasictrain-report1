@@ -42,6 +42,7 @@ pbm_error_t pbmcodec_sixel_write(const pbm_info* info, FILE* fp) {
 		return PBM_SYSTEM_ERROR; // TODO
 	}
 
+	sixel_encoder_unref(encoder);
 	dup2(orig_stdout, STDOUT_FILENO);
 	return PBM_SUCCESS;
 }

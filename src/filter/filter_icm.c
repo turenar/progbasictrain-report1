@@ -11,7 +11,7 @@ static uint8_t search_lower_energy_value(const pbm_info*, int x, int y);
 static int get_energy_with_value(const pbm_info*, int x, int y, int value);
 static int fit_position(int v, int max);
 
-int pbmfilter_icm(const pbm_info* in, pbm_info* out, const char** args) {
+pbm_error_t pbmfilter_icm(const pbm_info* in, pbm_info* out, const char** args) {
 	UNUSED_VAR(args);
 
 	pbm_init(out, in->width, in->height);
