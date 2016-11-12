@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdio.h>
-#include "pbm.h"
+#include "../pbm.h"
 
 typedef pbm_error_t (* pbmcodec_reader_fn)(pbm_info*, FILE*);
 typedef pbm_error_t (* pbmcodec_writer_fn)(const pbm_info*, FILE*);
@@ -15,4 +15,9 @@ pbm_error_t pbmcodec_pbm_write(const pbm_info*, FILE*);
 #ifdef USE_LIBPNG
 pbm_error_t pbmcodec_png_read(pbm_info*, FILE*);
 pbm_error_t pbmcodec_png_write(const pbm_info*, FILE*);
+#endif
+
+#ifdef USE_LIBSIXEL
+//pbm_error_t pbmcodec_sixel_read(pbm_info*, FILE*);
+pbm_error_t pbmcodec_sixel_write(const pbm_info*, FILE*);
 #endif

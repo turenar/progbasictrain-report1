@@ -23,11 +23,11 @@ AC_ARG_ENABLE(debug,
 	AS_HELP_STRING(
 		[--enable-debug],
 		[enable debugging, default: no]),
-		[case "${enableval}" in
-			yes) debug=true;;
-			no)  debug=false;;
-			*)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]);;
-		esac],
+	[case "${enableval}" in
+		yes) debug=true;;
+		no)  debug=false;;
+		*)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]);;
+	esac],
 	[debug=false])
 
 debug_flag="-g"
@@ -49,9 +49,49 @@ AX_CHECK_LINK_FLAG([-rdynamic], [AX_APPEND_FLAG([-rdynamic], [LDFLAGS])], [])
 
 # Checks for libraries.
 
-PKG_CHECK_MODULES([libpng], [libpng], [AC_DEFINE([USE_LIBPNG], [1], [libpng])])
+AC_ARG_WITH([libpng],
+			[AS_HELP_STRING([--with-libpng],
+							[support png r/w, default: auto])],
+			[case "${enableval}" in
+				yes) libpng_support=true;;
+				no)  libpng_support=false;;
+				auto)libpng_support=auto;;
+				*)   AC_MSG_ERROR([bad value ${enableval} for --with-libpng]);;
+			esac],
+			[libpng_support=auto])
+if test "x$libpng_support" != xauto; then
+	: do nothing
+else
+	PKG_CHECK_MODULES([libpng], [libpng], [has_libpng=yes], [has_libpng=no])
+	if test "x$libpng_support$has_libpng" = "xyesno"; then
+		AC_MSG_ERROR([--with-libpng requires libpng])
+	fi
+	AC_DEFINE([USE_LIBPNG], [1], [libpng])
+fi
 AC_SUBST([libpng_CFLAGS])
 AC_SUBST([libpng_LIBS])
+
+AC_ARG_WITH([libsixel],
+			[AS_HELP_STRING([--with-libsixel],
+							[support png r/w, default: auto])],
+			[case "${enableval}" in
+				yes) libsixel_support=true;;
+				no)  libsixel_support=false;;
+				auto)libsixel_support=auto;;
+				*)   AC_MSG_ERROR([bad value ${enableval} for --with-libsixel]);;
+			esac],
+			[libsixel_support=auto])
+if test "x$libsixel_support" != xauto; then
+	: do nothing
+else
+	PKG_CHECK_MODULES([libsixel], [libsixel], [has_libsixel=yes], [has_libsixel=no])
+	if test "x$libsixel_support$has_libsixel" = "xyesno"; then
+		AC_MSG_ERROR([--with-libsixel requires libsixel])
+	fi
+	AC_DEFINE([USE_LIBSIXEL], [1], [libsixel])
+fi
+AC_SUBST([libsixel_CFLAGS])
+AC_SUBST([libsixel_LIBS])
 
 # Checks for header files.
 
