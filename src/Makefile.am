@@ -20,5 +20,7 @@ pbm_codecs = codec/codecs.c \
 			 codec/codec_png.c \
 			 codec/codec_sixel.c \
 			 codec/codec_gtk.c
-pbm_cores = pbm.c logger.c
+pbm_cores = pbm.c \
+			pbmutil.c \
+			logger.c
 libpbm_a_SOURCES = $(pbm_cores) $(pbm_filters) $(pbm_codecs)

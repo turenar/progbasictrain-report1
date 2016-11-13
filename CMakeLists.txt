@@ -9,7 +9,7 @@ pkg_check_modules(GTK REQUIRED gtk+-3.0)
 include_directories(${GTK_INCLUDE_DIRS})
 
 include_directories(externals/cutest src test)
-add_library(pbmcore STATIC src/pbm.h src/pbm.c src/logger.c src/logger.h)
+add_library(pbmcore STATIC src/pbm.h src/pbm.c src/logger.c src/logger.h src/pbmutil.h src/pbmutil.c)
 add_library(pbmfilter STATIC
         src/filter/filter_noise.c src/filter/filter_common.h src/filter/filter_common.c
         src/filter/filter_icm.c src/filter/filters.h src/filter/filters.c)

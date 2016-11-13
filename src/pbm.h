@@ -16,6 +16,7 @@ typedef enum {
 	PBM_ALLOCATION_FAILED,
 	PBM_SYSTEM_ERROR,
 	PBMFILTER_INVALID_ARG,
+	PBMFILTER_NOT_FOUND
 } pbm_error_t;
 
 void pbm_init(pbm_info*, int width, int height);

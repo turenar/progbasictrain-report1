@@ -7,7 +7,7 @@
 
 static uint8_t _pbmfilter_noise_point(uint8_t, void*);
 
-pbm_error_t pbmfilter_noise(const pbm_info* in, pbm_info* out, const char** args) {
+pbm_error_t pbmfilter_noise(const pbm_info* in, pbm_info* out, char** args) {
 	pbm_init(out, in->width, in->height);
 
 	double prob = 0.1;

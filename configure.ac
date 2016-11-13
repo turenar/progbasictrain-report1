@@ -33,6 +33,7 @@ AC_ARG_ENABLE(debug,
 debug_flag="-g"
 if test "$debug" = true; then
 	AX_CHECK_COMPILE_FLAG([-Og], [AX_APPEND_FLAG([-Og], [debug_flag])], [AX_APPEND_FLAG([-O0], [debug_flag])])
+	AX_CHECK_COMPILE_FLAG([-fsanitize=leak], [AX_APPEND_FLAG([-fsanitize=leak], [])], [])
 	AC_DEFINE([_DEBUG], [], [Debug mode])
 else
 	AX_APPEND_FLAG([-O2], [debug_flag])
@@ -45,6 +46,7 @@ AX_CHECK_COMPILE_FLAG([-Wextra], [AX_APPEND_FLAG([-Wextra], [warn_flags])], [])
 AX_CHECK_COMPILE_FLAG([-Wconversion], [AX_APPEND_FLAG([-Wconversion], [warn_flags])], [])
 AX_CHECK_COMPILE_FLAG([-Werror=implicit-function-declaration], [AX_APPEND_FLAG([-Werror=implicit-function-declaration], [warn_flags])], [])
 AX_CHECK_COMPILE_FLAG([-pedantic], [AX_APPEND_FLAG([-pedantic], [warn_flags])], [])
+# for libSegFault.so, backtrace
 AX_CHECK_LINK_FLAG([-rdynamic], [AX_APPEND_FLAG([-rdynamic], [LDFLAGS])], [])
 
 # Checks for libraries.

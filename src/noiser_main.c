@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
 
 	pbm_info output;
 	// argv[argc] == NULL
-	pbmfilter_noise(&input, &output, (const char**) argv + 3);
+	pbmfilter_noise(&input, &output, argv + 3);
 	pbmcodec_pbm_write(&output, wfp);
 	return 0;
 }

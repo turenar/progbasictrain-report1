@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
 	}
 
 	pbm_info output;
-	pbmfilter_icm(&input, &output, (const char**) argv + 3);
+	pbmfilter_icm(&input, &output, argv + 3);
 	pbmcodec_pbm_write(&output, wfp);
 	return 0;
 }

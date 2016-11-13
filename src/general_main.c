@@ -1,12 +1,19 @@
 #include "config.inc.h"
 
-#include <assert.h>
 #include <stdlib.h>
 #include <getopt.h>
-#include "filter/filters.h"
+#include "pbmutil.h"
 #include "codec/codecs.h"
 #include "logger.h"
 
+
+typedef struct {
+	char* infile_name;
+	char* outfile_name;
+	pbmcodec_reader_fn reader;
+	pbmcodec_writer_fn writer;
+	filter_info* filters;
+} app_opts;
 
 static struct option long_options[] = {
 		{"help",     no_argument,       NULL, 'h'},
@@ -18,8 +25,9 @@ static struct option long_options[] = {
 };
 
 static char* get_filename_extension(char*);
-static void show_help(FILE* fp, const char* program_name);
 static int is_virtual_pipe_name(const char*);
+static void parse_opts(int argc, char** argv, app_opts* ret);
+static void parse_filters(int argc, char** argv, app_opts* ret);
 
 
 static void show_help(FILE* fp, const char* program_name) {
@@ -44,84 +52,48 @@ static void show_help(FILE* fp, const char* program_name) {
 }
 
 int main(int argc, char** argv) {
-	char* infile_name = NULL;
-	char* outfile_name = NULL;
-	pbmcodec_reader_fn reader = NULL;
-	pbmcodec_writer_fn writer = NULL;
+	app_opts opts = {NULL, NULL, NULL, NULL, NULL};
 
-	int opt;
-	int longindex;
-	while ((opt = getopt_long(argc, argv, "hi:o:f:t:", long_options, &longindex)) != -1) {
-//		printf("%d %s\n", longindex, long_options[longindex].name);
-		switch (opt) {
-			case 'i':
-				infile_name = optarg;
-				break;
-			case 'o':
-				outfile_name = optarg;
-				break;
-			case 'f':
-				reader = pbmcodec_get_reader(optarg);
-				if (!reader) {
-					LOG(error, "reader not found: '%s'", optarg);
-				}
-				break;
-			case 't':
-				writer = pbmcodec_get_writer(optarg);
-				if (!writer) {
-					LOG(error, "writer not found: '%s'", optarg);
-				}
-				break;
-			case 'h':
-				show_help(stdout, argv[0]);
-				return 0;
-			case '?':
-				show_help(stderr, argv[0]);
-				return 1;
-			default:
-				LOG(error, "logic error: %c, %c", opt, optopt);
-				abort();
-		}
-	}
-
+	parse_opts(argc, argv, &opts);
+	parse_filters(argc, argv, &opts);
 	FILE* infile = stdin;
 	FILE* outfile = stdout;
-	if (infile_name != NULL) {
-		if (!is_virtual_pipe_name(infile_name)) {
-			infile = fopen(infile_name, "rb");
+	if (opts.infile_name != NULL) {
+		if (!is_virtual_pipe_name(opts.infile_name)) {
+			infile = fopen(opts.infile_name, "rb");
 			if (!infile) {
-				perror(infile_name);
+				perror(opts.infile_name);
 				return 1;
 			}
-			if (!reader) {
-				reader = pbmcodec_get_reader(get_filename_extension(infile_name));
-				if (!reader) {
+			if (!opts.reader) {
+				opts.reader = pbmcodec_get_reader(get_filename_extension(opts.infile_name));
+				if (!opts.reader) {
 					LOG(warn, "source type prediction failed: '%s'", optarg);
 				}
 			}
 		}
 	}
-	if (outfile_name != NULL) {
-		if (!is_virtual_pipe_name(outfile_name)) {
-			outfile = fopen(outfile_name, "wb");
+	if (opts.outfile_name != NULL) {
+		if (!is_virtual_pipe_name(opts.outfile_name)) {
+			outfile = fopen(opts.outfile_name, "wb");
 			if (!outfile) {
-				perror(outfile_name);
+				perror(opts.outfile_name);
 				return 1;
 			}
-			if (!writer) {
-				writer = pbmcodec_get_writer(get_filename_extension(outfile_name));
-				if (!writer) {
+			if (!opts.writer) {
+				opts.writer = pbmcodec_get_writer(get_filename_extension(opts.outfile_name));
+				if (!opts.writer) {
 					LOG(error, "target type prediction failed: '%s'", optarg);
 				}
 			}
 		}
 	}
 
-	if (!reader) {
+	if (!opts.reader) {
 		LOG(error, "you must specify -f <source-type> or -i <filename.ext>");
 		return 1;
 	}
-	if (!writer) {
+	if (!opts.writer) {
 		LOG(error, "you must specify -t <target-type> or -o <filename.ext>");
 		return 1;
 	}
@@ -131,40 +103,20 @@ int main(int argc, char** argv) {
 	pbm_info* prev = &a;
 	pbm_info* next = &b;
 
-	if (reader(prev, infile)) {
+	if (opts.reader(prev, infile)) {
 		return 1;
 	}
-	for (int i = optind; i < argc; i++) {
-		size_t arg_count = 0;
-		for (char* p = argv[i]; *p != '\0'; p++) {
-			if (*p == ':') {
-				arg_count++;
-			}
-		}
-		char** filter_args = (char**) malloc(sizeof(char*) * arg_count);
-		char** args_p = filter_args;
-		*args_p++ = argv[i];
-		for (char* p = argv[i]; *p != '\0'; p++) {
-			if (*p == ':') {
-				*p++ = '\0';
-				*args_p++ = p;
-			}
-		}
 
-		pbmfilter_fn filter_fn = pbmfilter_get_filter(filter_args[0]);
-		if (!filter_fn) {
-			LOG(error, "filter not found: '%s'", filter_args[0]);
-		}
-
-		if (filter_fn(prev, next, (const char**) (filter_args + 1))) {
+	for (filter_info* p = opts.filters; p->args != NULL; p++) {
+		if (p->fn(prev, next, p->args + 1)) {
 			return 1;
 		}
-		pbm_info* tmp = next;
-		next = prev;
-		prev = tmp;
+		pbm_info* tmp = prev;
+		prev = next;
+		next = tmp;
 	}
 
-	if (writer(prev, outfile)) {
+	if (opts.writer(prev, outfile)) {
 		return 1;
 	}
 }
@@ -181,4 +133,57 @@ static char* get_filename_extension(char* str) {
 
 static int is_virtual_pipe_name(const char* s) {
 	return s[0] == '-' && s[1] == '\0';
+}
+
+static void parse_opts(int argc, char** argv, app_opts* ret) {
+	int opt;
+	int longindex;
+	while ((opt = getopt_long(argc, argv, "hi:o:f:t:", long_options, &longindex)) != -1) {
+//		printf("%d %s\n", longindex, long_options[longindex].name);
+		switch (opt) {
+			case 'i':
+				ret->infile_name = optarg;
+				break;
+			case 'o':
+				ret->outfile_name = optarg;
+				break;
+			case 'f':
+				ret->reader = pbmcodec_get_reader(optarg);
+				if (!ret->reader) {
+					LOG(error, "reader not found: '%s'", optarg);
+				}
+				break;
+			case 't':
+				ret->writer = pbmcodec_get_writer(optarg);
+				if (!ret->writer) {
+					LOG(error, "writer not found: '%s'", optarg);
+				}
+				break;
+			case 'h':
+				show_help(stdout, argv[0]);
+				exit(0);
+			case '?':
+				show_help(stderr, argv[0]);
+				exit(1);
+			default:
+				LOG(error, "logic error: %c, %c", opt, optopt);
+				abort();
+		}
+	}
+}
+
+static void parse_filters(int argc, char** argv, app_opts* ret) {
+	int filter_count = argc - optind;
+	filter_info* filters = malloc(sizeof(filter_info) * (size_t) (filter_count + 1));
+	filter_info* p = filters;
+	for (int i = 0; i < filter_count; i++) {
+		pbm_error_t error = pbm_parse_filter_str(argv[optind + i], p++);
+		if (error) {
+			exit(1);
+		}
+	}
+	// last element
+	p->args = NULL;
+	p->fn = NULL;
+	ret->filters = filters;
 }
