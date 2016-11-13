@@ -8,6 +8,7 @@ typedef pbm_error_t (* pbmcodec_writer_fn)(const pbm_info*, FILE*);
 
 pbmcodec_reader_fn pbmcodec_get_reader(const char* name);
 pbmcodec_writer_fn pbmcodec_get_writer(const char* name);
+void pbmcodec_show_help(FILE*);
 
 pbm_error_t pbmcodec_pbm_read(pbm_info*, FILE*);
 pbm_error_t pbmcodec_pbm_write(const pbm_info*, FILE*);

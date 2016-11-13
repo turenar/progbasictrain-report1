@@ -6,33 +6,35 @@
 typedef struct {
 	const char* name;
 	pbmcodec_reader_fn fn;
+	const char* help;
 } pbmcodec_reader_info;
 typedef struct {
 	const char* name;
 	pbmcodec_writer_fn fn;
+	const char* help;
 } pbmcodec_writer_info;
 
 static pbmcodec_reader_info readers[] = {
-		{"pbm", pbmcodec_pbm_read},
+		{"pbm", pbmcodec_pbm_read, "read from netpbm, bitmap"},
 #ifdef USE_LIBPNG
-		{"png", pbmcodec_png_read},
+		{"png", pbmcodec_png_read, "read from png file. paletted png is not supported"},
 #endif
-		{NULL, NULL}
+		{NULL, NULL, NULL}
 };
 
 static pbmcodec_writer_info writers[] = {
-		{"pbm", pbmcodec_pbm_write},
+		{"pbm", pbmcodec_pbm_write, "save as netpbm, bitmap"},
 #ifdef USE_LIBPNG
-		{"png", pbmcodec_png_write},
+		{"png", pbmcodec_png_write, "save as 8-bit gray-scaled png"},
 #endif
 #ifdef USE_LIBSIXEL
-		{"six", pbmcodec_sixel_write},
-		{"sixel", pbmcodec_sixel_write},
+		{"six", pbmcodec_sixel_write, "alias of sixel"},
+		{"sixel", pbmcodec_sixel_write, "show image in supported console with sixel format"},
 #endif
 #ifdef USE_GTK
-		{"gdk", pbmcodec_gtk_write},
+		{"gtk", pbmcodec_gtk_write, "show image in display"},
 #endif
-		{NULL, NULL}
+		{NULL, NULL, NULL}
 };
 
 
@@ -54,3 +56,13 @@ pbmcodec_writer_fn pbmcodec_get_writer(const char* name) {
 	return NULL;
 }
 
+void pbmcodec_show_help(FILE* fp) {
+	fprintf(fp, "  input:\n");
+	for (const pbmcodec_reader_info* p = readers; p->name != NULL; p++) {
+		fprintf(fp, "    %-10s  %s\n", p->name, p->help);
+	}
+	fprintf(fp, "  output:\n");
+	for (const pbmcodec_writer_info* p = writers; p->name != NULL; p++) {
+		fprintf(fp, "    %-10s  %s\n", p->name, p->help);
+	}
+}

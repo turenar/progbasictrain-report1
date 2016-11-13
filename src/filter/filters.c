@@ -23,3 +23,13 @@ pbmfilter_fn pbmfilter_get_filter(const char* name) {
 	return NULL;
 }
 
+void pbmfilter_show_help(FILE* fp) {
+	fprintf(fp, ""
+			"  icm\n"
+			"    denoise filter; iterated conditional modes\n"
+			"  noise[:<prob>]\n"
+			"    random whilte<->black flip in <prob> probability\n"
+			"      args:     prob       flip probability [double]\n"
+			"      example:  'noise' flips in 10%% chance\n"
+			"                'noise:1.0' flips all pixels\n");
+}
