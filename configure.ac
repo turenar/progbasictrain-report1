@@ -33,7 +33,9 @@ AC_ARG_ENABLE(debug,
 debug_flag="-g"
 if test "$debug" = true; then
 	AX_CHECK_COMPILE_FLAG([-Og], [AX_APPEND_FLAG([-Og], [debug_flag])], [AX_APPEND_FLAG([-O0], [debug_flag])])
-	AX_CHECK_COMPILE_FLAG([-fsanitize=leak], [AX_APPEND_FLAG([-fsanitize=leak], [])], [])
+	# -fsanitize=leak fails with linker error (-llsan is not found)
+	AX_CHECK_COMPILE_FLAG([-fsanitize=leak],
+						  [AX_CHECK_LINK_FLAG([-fsanitize=leak], [AX_APPEND_FLAG([-fsanitize=leak], [])])], [])
 	AC_DEFINE([_DEBUG], [], [Debug mode])
 else
 	AX_APPEND_FLAG([-O2], [debug_flag])
@@ -55,20 +57,22 @@ AC_ARG_WITH([libpng],
 			[AS_HELP_STRING([--with-libpng],
 							[support png r/w, default: auto])],
 			[case "${enableval}" in
-				yes) libpng_support=true;;
-				no)  libpng_support=false;;
+				yes) libpng_support=yes;;
+				no)  libpng_support=no;;
 				auto)libpng_support=auto;;
 				*)   AC_MSG_ERROR([bad value ${enableval} for --with-libpng]);;
 			esac],
 			[libpng_support=auto])
-if test "x$libpng_support" != xauto; then
+if test "x$libpng_support" = xno; then
 	: do nothing
 else
 	PKG_CHECK_MODULES([libpng], [libpng], [has_libpng=yes], [has_libpng=no])
 	if test "x$libpng_support$has_libpng" = "xyesno"; then
 		AC_MSG_ERROR([--with-libpng requires libpng])
 	fi
-	AC_DEFINE([USE_LIBPNG], [1], [libpng])
+	if test "x$has_libpng" = xyes; then
+		AC_DEFINE([USE_LIBPNG], [1], [libpng])
+	fi
 fi
 AC_SUBST([libpng_CFLAGS])
 AC_SUBST([libpng_LIBS])
@@ -83,14 +87,16 @@ AC_ARG_WITH([libsixel],
 				*)   AC_MSG_ERROR([bad value ${enableval} for --with-libsixel]);;
 			esac],
 			[libsixel_support=auto])
-if test "x$libsixel_support" != xauto; then
+if test "x$libsixel_support" = xno; then
 	: do nothing
 else
 	PKG_CHECK_MODULES([libsixel], [libsixel], [has_libsixel=yes], [has_libsixel=no])
 	if test "x$libsixel_support$has_libsixel" = "xyesno"; then
 		AC_MSG_ERROR([--with-libsixel requires libsixel])
 	fi
-	AC_DEFINE([USE_LIBSIXEL], [1], [libsixel])
+	if test "x$has_libsixel" = xyes; then
+		AC_DEFINE([USE_LIBSIXEL], [1], [libsixel])
+	fi
 fi
 AC_SUBST([libsixel_CFLAGS])
 AC_SUBST([libsixel_LIBS])
@@ -105,14 +111,16 @@ AC_ARG_WITH([gtk3],
 				*)   AC_MSG_ERROR([bad value ${enableval} for --with-gtk]);;
 			esac],
 			[gtk_support=auto])
-if test "x$gtk_support" != xauto; then
+if test "x$gtk_support" = no; then
 	: do nothing
 else
 	PKG_CHECK_MODULES([gtk], [gtk+-3.0], [has_gtk=yes], [has_gtk=no])
 	if test "x$gtk_support$has_gtk" = "xyesno"; then
 		AC_MSG_ERROR([--with-gtk requires gtk])
 	fi
-	AC_DEFINE([USE_GTK], [1], [gtk])
+	if test "x$has_libgtk" = xyes; then
+		AC_DEFINE([USE_GTK], [1], [gtk])
+	fi
 fi
 AC_SUBST([gtk_CFLAGS])
 AC_SUBST([gtk_LIBS])
