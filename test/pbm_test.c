@@ -15,6 +15,7 @@ static void test_pbmcodec_pbm_read(CuTest* tc) {
         else{ CuAssertIntEquals(tc, expected, pbmcodec_pbm_read(&info, fp));}}
 #define CHECK_PBM_LOAD(expected, file) CHECK_PBM_LOAD1(expected, testdatadir "/" file)
 	pbm_info info;
+	pbm_init(&info);
 	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_empty.pbm")
 	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_invalid_sig1.pbm")
 	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_invalid_sig2.pbm")
@@ -33,6 +34,7 @@ static void test_pbmcodec_pbm_read(CuTest* tc) {
 
 static void test_pbmcodec_pbm_write(CuTest* tc) {
 	pbm_info info;
+	pbm_init(&info);
 	FILE* rfp = fopen(testdatadir "/pbm/04_lf.pbm", "r");
 	pbmcodec_pbm_read(&info, rfp);
 
@@ -45,7 +47,8 @@ static void test_pbmcodec_pbm_write(CuTest* tc) {
 }
 
 static void test_pbm_free(CuTest* tc) {
-	pbm_info info = {0, 0, NULL};
+	pbm_info info;
+	pbm_init(&info);
 	pbm_free(&info);
 	CuAssertPtrEquals(tc, NULL, info.data);
 

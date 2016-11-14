@@ -11,6 +11,7 @@ int main(int argc, char** argv) {
 	}
 
 	pbm_info input;
+	pbm_init(&input);
 	FILE* rfp = fopen(argv[1], "rb");
 	if (!rfp) {
 		perror(argv[1]);
@@ -27,6 +28,7 @@ int main(int argc, char** argv) {
 	}
 
 	pbm_info output;
+	pbm_init(&output);
 	pbmfilter_icm(&input, &output, argv + 3);
 	pbmcodec_pbm_write(&output, wfp);
 	return 0;

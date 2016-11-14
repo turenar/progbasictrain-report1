@@ -14,7 +14,7 @@ static int fit_position(int v, int max);
 pbm_error_t pbmfilter_icm(const pbm_info* in, pbm_info* out, char** args) {
 	UNUSED_VAR(args);
 
-	pbm_init(out, in->width, in->height);
+	pbm_resize(out, in->width, in->height);
 	pbm_copy(in, out);
 
 	int updated;

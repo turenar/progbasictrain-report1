@@ -98,10 +98,12 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
-	pbm_info a = {-1, -1, NULL};
-	pbm_info b = {-1, -1, NULL};
+	pbm_info a;
+	pbm_info b;
 	pbm_info* prev = &a;
 	pbm_info* next = &b;
+	pbm_init(&a);
+	pbm_init(&b);
 
 	if (opts.reader(prev, infile)) {
 		return 1;

@@ -54,7 +54,7 @@ pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 		return PBMCODEC_INVALID_HEADER;
 	}
 
-	pbm_init(info, (int) png_get_image_width(png_ptr, info_ptr), (int) png_get_image_height(png_ptr, info_ptr));
+	pbm_resize(info, (int) png_get_image_width(png_ptr, info_ptr), (int) png_get_image_height(png_ptr, info_ptr));
 	uint8_t** row_p = info->data;
 
 	png_byte color_type = png_get_color_type(png_ptr, info_ptr);

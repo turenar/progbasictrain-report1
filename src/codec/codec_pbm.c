@@ -29,7 +29,7 @@ pbm_error_t pbmcodec_pbm_read(pbm_info* info, FILE* fp) {
 		return ret;
 	}
 
-	pbm_init(info, info->width, info->height);
+	pbm_resize(info, info->width, info->height);
 	// image data...
 	uint8_t** row_p = info->data;
 	for (int y = 0; y < info->height; ++y) {
