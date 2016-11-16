@@ -10,6 +10,7 @@
 
 pbm_error_t pbmcodec_sixel_write(const pbm_info* info, FILE* fp) {
 	int orig_stdout = dup(STDOUT_FILENO);
+	pbm_error_t ret;
 	// libsixel は stdout への出力か filename での指定にしか対応していない。fp へ出力させるために stdout を
 	// fp の fd で乗っ取る
 	dup2(fileno(fp), STDOUT_FILENO);
@@ -34,17 +35,21 @@ pbm_error_t pbmcodec_sixel_write(const pbm_info* info, FILE* fp) {
 	SIXELSTATUS sixel_status = sixel_encoder_new(&encoder, NULL);
 	if (SIXEL_FAILED(sixel_status)) {
 		LOG(error, "sixel encoder initialization failed");
-		return PBM_ALLOCATION_FAILED;
+		ret = PBM_ALLOCATION_FAILED;
+		goto sixel_error;
 	}
 	sixel_status = sixel_encoder_encode_bytes(encoder, data, info->width, info->height, PIXELFORMAT_G8, NULL, 2);
 	if (SIXEL_FAILED(sixel_status)) {
 		LOG(error, "sixel encode failed");
-		return PBM_SYSTEM_ERROR; // TODO
+		ret = PBM_SYSTEM_ERROR;
+		goto sixel_error;
 	}
-
+	ret = PBM_SUCCESS;
+sixel_error:
 	sixel_encoder_unref(encoder);
+	free(data);
 	dup2(orig_stdout, STDOUT_FILENO);
-	return PBM_SUCCESS;
+	return ret;
 }
 
 #else

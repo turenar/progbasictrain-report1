@@ -53,6 +53,7 @@ static void show_help(FILE* fp, const char* program_name) {
 
 int main(int argc, char** argv) {
 	app_opts opts = {NULL, NULL, NULL, NULL, NULL};
+	int result = 1;
 
 	parse_opts(argc, argv, &opts);
 	parse_filters(argc, argv, &opts);
@@ -106,12 +107,12 @@ int main(int argc, char** argv) {
 	pbm_init(&b);
 
 	if (opts.reader(prev, infile)) {
-		return 1;
+		goto pbm_error;
 	}
 
 	for (filter_info* p = opts.filters; p->args != NULL; p++) {
 		if (p->fn(prev, next, p->args + 1)) {
-			return 1;
+			goto pbm_error;
 		}
 		pbm_info* tmp = prev;
 		prev = next;
@@ -119,8 +120,14 @@ int main(int argc, char** argv) {
 	}
 
 	if (opts.writer(prev, outfile)) {
-		return 1;
+		goto pbm_error;
 	}
+	result = 0;
+
+pbm_error:
+	pbm_free(&a);
+	pbm_free(&b);
+	return result;
 }
 
 static char* get_filename_extension(char* str) {

@@ -30,6 +30,7 @@ static void test_pbmcodec_pbm_read(CuTest* tc) {
 	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_invalid_data.pbm")
 	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/04_crlf.pbm")
 	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/04_lf.pbm")
+	pbm_free(&info);
 }
 
 static void test_pbmcodec_pbm_write(CuTest* tc) {
@@ -44,6 +45,7 @@ static void test_pbmcodec_pbm_write(CuTest* tc) {
 	fseek(rfp, 0, SEEK_SET);
 	fseek(wfp, 0, SEEK_SET);
 	CuAssertIntEquals(tc, 1, check_file_equals(rfp, wfp));
+	pbm_free(&info);
 }
 
 static void test_pbm_free(CuTest* tc) {

@@ -42,6 +42,7 @@ else
 	AC_DEFINE([NDEBUG], [], [Release mode])
 fi
 CFLAGS="${debug_flag}${CFLAGS:+ }${CFLAGS-}"
+AM_CONDITIONAL([DEBUG], [test x$debug = xtrue])
 
 AX_CHECK_COMPILE_FLAG([-Wall], [AX_APPEND_FLAG([-Wall], [warn_flags])], [])
 AX_CHECK_COMPILE_FLAG([-Wextra], [AX_APPEND_FLAG([-Wextra], [warn_flags])], [])

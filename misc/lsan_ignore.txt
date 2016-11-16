@@ -1,0 +1,3 @@
+leak:sixel_allocator_new
+leak:sixel_frame_new
+leak:^Cu
