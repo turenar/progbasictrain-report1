@@ -57,11 +57,11 @@ AX_CHECK_LINK_FLAG([-rdynamic], [AX_APPEND_FLAG([-rdynamic], [LDFLAGS])], [])
 AC_ARG_WITH([libpng],
 			[AS_HELP_STRING([--with-libpng],
 							[support png r/w, default: auto])],
-			[case "${enableval}" in
+			[case "${withval}" in
 				yes) libpng_support=yes;;
 				no)  libpng_support=no;;
 				auto)libpng_support=auto;;
-				*)   AC_MSG_ERROR([bad value ${enableval} for --with-libpng]);;
+				*)   AC_MSG_ERROR([bad value ${withval} for --with-libpng]);;
 			esac],
 			[libpng_support=auto])
 if test "x$libpng_support" = xno; then
@@ -81,11 +81,11 @@ AC_SUBST([libpng_LIBS])
 AC_ARG_WITH([libsixel],
 			[AS_HELP_STRING([--with-libsixel],
 							[support png r/w, default: auto])],
-			[case "${enableval}" in
+			[case "${withval}" in
 				yes) libsixel_support=true;;
 				no)  libsixel_support=false;;
 				auto)libsixel_support=auto;;
-				*)   AC_MSG_ERROR([bad value ${enableval} for --with-libsixel]);;
+				*)   AC_MSG_ERROR([bad value ${withval} for --with-libsixel]);;
 			esac],
 			[libsixel_support=auto])
 if test "x$libsixel_support" = xno; then
@@ -105,11 +105,11 @@ AC_SUBST([libsixel_LIBS])
 AC_ARG_WITH([gtk3],
 			[AS_HELP_STRING([--with-gtk3],
 							[support png r/w, default: auto])],
-			[case "${enableval}" in
+			[case "${withval}" in
 				yes) gtk_support=true;;
 				no)  gtk_support=false;;
 				auto)gtk_support=auto;;
-				*)   AC_MSG_ERROR([bad value ${enableval} for --with-gtk]);;
+				*)   AC_MSG_ERROR([bad value ${withval} for --with-gtk]);;
 			esac],
 			[gtk_support=auto])
 if test "x$gtk_support" = no; then
