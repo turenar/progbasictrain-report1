@@ -13,6 +13,8 @@ void pbmcodec_show_help(FILE*);
 pbm_error_t pbmcodec_pbm_read(pbm_info*, FILE*);
 pbm_error_t pbmcodec_pbm_write(const pbm_info*, FILE*);
 
+pbm_error_t pbmcodec_count(const pbm_info* , FILE*);
+
 #ifdef USE_LIBPNG
 pbm_error_t pbmcodec_png_read(pbm_info*, FILE*);
 pbm_error_t pbmcodec_png_write(const pbm_info*, FILE*);

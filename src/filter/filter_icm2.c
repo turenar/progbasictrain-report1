@@ -11,6 +11,7 @@
 #define ICM_DEFAULT_GAMMA 2
 #define ICM_DEFAULT_RADIUS 1
 #define ICM_DEFAULT_WEIGHT_METHOD ICM_WEIGHT_FLAT
+#define ICM_LOOP_LIMIT 20
 
 typedef enum {
 	ICM_WEIGHT_FLAT = 0, ICM_WEIGHT_SQUARE, ICM_WEIGHT_DIA, ICM_WEIGHT_CIRCLE,
@@ -54,7 +55,9 @@ pbm_error_t pbmfilter_icm2(const pbm_info* in, pbm_info* out, char** args) {
 	pbm_copy(in, out);
 
 	int updated;
+	int loop_limit = ICM_LOOP_LIMIT;
 	do {
+		LOG(debug, "loop_limit: %d", loop_limit);
 		updated = 0;
 		uint8_t** row_p = out->data;
 		for (int y = 0; y < in->height; ++y) {
@@ -68,7 +71,7 @@ pbm_error_t pbmfilter_icm2(const pbm_info* in, pbm_info* out, char** args) {
 				col_p++;
 			}
 		}
-	} while (updated > 16); //TODO
+	} while (--loop_limit > 0 && updated > 16); //TODO
 
 	return PBM_SUCCESS;
 }
@@ -172,13 +175,13 @@ static double get_mag_from_param(icm_param param, int dx, int dy) {
 	dy = abs(dy);
 	switch (param.type) {
 		case ICM_WEIGHT_FLAT:
-			return 1;
+			return param.beta;
 		case ICM_WEIGHT_SQUARE:
-			return 1 / (dx > dy ? dx : dy);
+			return param.beta / (double) (dx > dy ? dx : dy);
 		case ICM_WEIGHT_DIA:
-			return param.search_radius / (dx + dy);
+			return param.beta / (double) (dx + dy);
 		case ICM_WEIGHT_CIRCLE:
-			return 1 / sqrt(dx * dx + dy * dy);
+			return param.beta / sqrt(dx * dx + dy * dy);
 		default:
 			LOG(error, "fatal logic error");
 			abort();

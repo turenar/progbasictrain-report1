@@ -34,6 +34,7 @@ static pbmcodec_writer_info writers[] = {
 #ifdef USE_GTK
 		{"gtk", pbmcodec_gtk_write, "show image in display"},
 #endif
+		{"count", pbmcodec_count, "(for experts) count black pixels and show"},
 		{NULL, NULL, NULL}
 };
 

@@ -21,7 +21,8 @@ pbm_codecs = codec/codecs.c \
 			 codec/codec_pbm.c \
 			 codec/codec_png.c \
 			 codec/codec_sixel.c \
-			 codec/codec_gtk.c
+			 codec/codec_gtk.c \
+			 codec/codec_count.c
 pbm_cores = pbm.c \
 			pbmutil.c \
 			logger.c

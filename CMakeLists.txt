@@ -15,7 +15,8 @@ add_library(pbmfilter STATIC
         src/filter/filter_icm.c src/filter/filter_icm2.c src/filter/filters.h
         src/filter/filters.c src/filter/filter_diff.c)
 add_library(pbmcodecs STATIC
-        src/codec/codecs.h src/codec/codecs.c src/codec/codec_pbm.c src/codec/codec_png.c src/codec/codec_sixel.c src/codec/codec_gtk.c)
+        src/codec/codecs.h src/codec/codecs.c src/codec/codec_pbm.c src/codec/codec_png.c src/codec/codec_sixel.c
+        src/codec/codec_gtk.c src/codec/codec_count.c)
 add_executable(noiser src/noiser_main.c)
 target_link_libraries(noiser pbmcore pbmfilter pbmcodecs)
 add_executable(denoiser src/denoiser_main.c src/codec/codec_pbm.c)
