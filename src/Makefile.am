@@ -14,6 +14,7 @@ general_filter_LDADD = libpbm.a $(libpng_LIBS) $(libsixel_LIBS) $(gtk_LIBS)
 pbm_filters = filter/filter_common.c \
 			  filter/filter_icm.c \
 			  filter/filter_noise.c \
+			  filter/filter_diff.c \
 			  filter/filters.c
 pbm_codecs = codec/codecs.c \
 			 codec/codec_pbm.c \

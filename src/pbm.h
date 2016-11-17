@@ -2,13 +2,13 @@
 
 #include <stdint.h>
 
-typedef struct {
+typedef struct pbm_info_tag{
 	int width;
 	int height;
 	uint8_t** data;
 } pbm_info;
 
-typedef enum {
+typedef enum pbm_error_tag{
 	PBM_SUCCESS = 0,
 	PBMCODEC_INVALID_SIGNATURE,
 	PBMCODEC_INVALID_HEADER,

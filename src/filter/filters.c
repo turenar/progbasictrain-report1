@@ -11,6 +11,8 @@ typedef struct {
 static pbmfilter_info filters[] = {
 		{"icm",   pbmfilter_icm},
 		{"noise", pbmfilter_noise},
+		{"diff1", pbmfilter_diff1},
+		{"diff2", pbmfilter_diff2},
 		{NULL, NULL}
 };
 
@@ -31,5 +33,10 @@ void pbmfilter_show_help(FILE* fp) {
 			"    random whilte<->black flip in <prob> probability\n"
 			"      args:     prob       flip probability [double]\n"
 			"      example:  'noise' flips in 10%% chance\n"
-			"                'noise:1.0' flips all pixels\n");
+			"                'noise:1.0' flips all pixels\n"
+			"  diff1\n"
+			"    save image data for diff2\n"
+			"  diff2\n"
+			"    output diff from _diff1_\n"
+			"    you must call only once _diff2_ after once _diff1_\n");
 }
