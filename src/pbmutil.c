@@ -21,6 +21,7 @@ pbm_error_t pbm_parse_filter_str(char* str, filter_info* filter) {
 			*args_p++ = p;
 		}
 	}
+	*args_p = NULL;
 
 	pbmfilter_fn filter_fn = pbmfilter_get_filter(filter_args[0]);
 	if (!filter_fn) {
