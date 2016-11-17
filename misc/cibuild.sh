@@ -58,6 +58,14 @@ check_compile cibuild-native+ps --without-gtk3
 check_compile cibuild-native+s  --without-gtk3 --without-libpng
 check_compile cibuild-native+p  --without-gtk3 --without-libsixel
 check_compile cibuild-native    --without-gtk3 --without-libsixel --without-libpng
+check_compile cibuild-native+cpsg CC=clang
+check_compile cibuild-native+csg  CC=clang --without-libpng
+check_compile cibuild-native+cpg  CC=clang --without-libsixel
+check_compile cibuild-native+cg   CC=clang --without-libsixel --without-libpng
+check_compile cibuild-native+cps  CC=clang --without-gtk3
+check_compile cibuild-native+cs   CC=clang --without-gtk3 --without-libpng
+check_compile cibuild-native+cp   CC=clang --without-gtk3 --without-libsixel
+check_compile cibuild-native+c    CC=clang --without-gtk3 --without-libsixel --without-libpng
 has_cmd x86_64-w64-mingw32-gcc && check_compile cibuild-mingw-x86_64 --host=x86_64-w64-mingw32
 has_cmd i686-w64-mingw32-gcc && check_compile cibuild-mingw-i686 --host=i686-w64-mingw32
 
