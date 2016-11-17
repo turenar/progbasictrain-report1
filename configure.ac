@@ -119,7 +119,7 @@ else
 	if test "x$gtk_support$has_gtk" = "xyesno"; then
 		AC_MSG_ERROR([--with-gtk requires gtk])
 	fi
-	if test "x$has_libgtk" = xyes; then
+	if test "x$has_gtk" = xyes; then
 		AC_DEFINE([USE_GTK], [1], [gtk])
 	fi
 fi
