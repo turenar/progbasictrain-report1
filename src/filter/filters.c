@@ -10,6 +10,7 @@ typedef struct {
 
 static pbmfilter_info filters[] = {
 		{"icm",   pbmfilter_icm},
+		{"icm2",   pbmfilter_icm2},
 		{"noise", pbmfilter_noise},
 		{"diff1", pbmfilter_diff1},
 		{"diff2", pbmfilter_diff2},

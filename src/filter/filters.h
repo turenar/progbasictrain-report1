@@ -10,5 +10,6 @@ void pbmfilter_show_help(FILE*);
 
 pbm_error_t pbmfilter_noise(const pbm_info* in, pbm_info* out, char** args);
 pbm_error_t pbmfilter_icm(const pbm_info* in, pbm_info* out, char** args);
+pbm_error_t pbmfilter_icm2(const pbm_info* in, pbm_info* out, char** args);
 pbm_error_t pbmfilter_diff1(const pbm_info* in, pbm_info* out, char** args);
 pbm_error_t pbmfilter_diff2(const pbm_info* in, pbm_info* out, char** args);

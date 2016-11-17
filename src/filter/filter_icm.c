@@ -5,7 +5,7 @@
 
 #define ICM_BETA 1
 #define ICM_GAMMA 5
-#define ICM_NEAR_SIZE 1
+#define ICM_RADIUS 1
 
 static uint8_t search_lower_energy_value(const pbm_info*, int x, int y);
 static int get_energy_with_value(const pbm_info*, int x, int y, int value);
@@ -54,10 +54,10 @@ static uint8_t search_lower_energy_value(const pbm_info* info, int x, int y) {
 static int get_energy_with_value(const pbm_info* info, int x, int y, int value) {
 	int energy = 0;
 
-	for (int i = -ICM_NEAR_SIZE; i <= ICM_NEAR_SIZE; ++i) {
+	for (int i = -ICM_RADIUS; i <= ICM_RADIUS; ++i) {
 		int row = fit_position(y + i, info->height);
 		uint8_t* row_p = info->data[row];
-		for (int j = -ICM_NEAR_SIZE; j <= ICM_NEAR_SIZE; ++j) {
+		for (int j = -ICM_RADIUS; j <= ICM_RADIUS; ++j) {
 			if (!(i == 0 && j == 0)) {
 				energy -= ICM_BETA * (2 * row_p[fit_position(x + j, info->width)] - 1) * (2 * value - 1);
 			}
