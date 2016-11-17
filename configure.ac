@@ -33,9 +33,6 @@ AC_ARG_ENABLE(debug,
 debug_flag="-g"
 if test "$debug" = true; then
 	AX_CHECK_COMPILE_FLAG([-Og], [AX_APPEND_FLAG([-Og], [debug_flag])], [AX_APPEND_FLAG([-O0], [debug_flag])])
-	# -fsanitize=leak fails with linker error (-llsan is not found)
-	AX_CHECK_COMPILE_FLAG([-fsanitize=leak],
-						  [AX_CHECK_LINK_FLAG([-fsanitize=leak], [AX_APPEND_FLAG([-fsanitize=leak], [])])], [])
 	AC_DEFINE([_DEBUG], [], [Debug mode])
 else
 	AX_APPEND_FLAG([-O2], [debug_flag])
@@ -43,6 +40,23 @@ else
 fi
 CFLAGS="${debug_flag}${CFLAGS:+ }${CFLAGS-}"
 AM_CONDITIONAL([DEBUG], [test x$debug = xtrue])
+
+AC_ARG_ENABLE(maintainer-mode,
+	AS_HELP_STRING(
+		[--enable-maintainer-mode],
+		[enable compiler option for maintainer, default: no]),
+	[case "${enableval}" in
+		yes) maintainer_mode=true;;
+		no)  maintainer_mode=false;;
+		*)   AC_MSG_ERROR([bad value ${enableval} for --enable-maintainer-mode]);;
+	esac],
+	[maintainer_mode=false])
+
+if test "$maintainer_mode" = true; then
+	# -fsanitize=leak fails with linker error (-llsan is not found)
+	AX_CHECK_COMPILE_FLAG([-fsanitize=leak],
+						  [AX_CHECK_LINK_FLAG([-fsanitize=leak], [AX_APPEND_FLAG([-fsanitize=leak], [])])], [])
+fi
 
 AX_CHECK_COMPILE_FLAG([-Wall], [AX_APPEND_FLAG([-Wall], [warn_flags])], [])
 AX_CHECK_COMPILE_FLAG([-Wextra], [AX_APPEND_FLAG([-Wextra], [warn_flags])], [])
