@@ -11,7 +11,7 @@
 #define ICM_DEFAULT_GAMMA 2
 #define ICM_DEFAULT_RADIUS 1
 #define ICM_DEFAULT_WEIGHT_METHOD ICM_WEIGHT_FLAT
-#define ICM_LOOP_LIMIT 20
+#define ICM_LOOP_LIMIT 100
 
 typedef enum {
 	ICM_WEIGHT_FLAT = 0, ICM_WEIGHT_SQUARE, ICM_WEIGHT_DIA, ICM_WEIGHT_CIRCLE,
@@ -57,7 +57,6 @@ pbm_error_t pbmfilter_icm2(const pbm_info* in, pbm_info* out, char** args) {
 	int updated;
 	int loop_limit = ICM_LOOP_LIMIT;
 	do {
-		LOG(debug, "loop_limit: %d", loop_limit);
 		updated = 0;
 		uint8_t** row_p = out->data;
 		for (int y = 0; y < in->height; ++y) {
