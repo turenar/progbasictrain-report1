@@ -102,7 +102,7 @@ static pbm_error_t _pbm_extract_size_from_header(const char* str, pbm_info* info
 	}
 
 	if (width <= 0 || height <= 0) {
-		LOG(error, "invalid size: %d, %d", width, height);
+		LOG(error, "invalid size: %ld, %ld", width, height);
 		return PBMCODEC_INVALID_HEADER;
 	}
 	info->width = (int) width;
