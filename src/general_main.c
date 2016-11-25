@@ -187,7 +187,7 @@ static void parse_opts(int argc, char** argv, app_opts* ret) {
 
 static void parse_filters(int argc, char** argv, app_opts* ret) {
 	int filter_count = argc - optind;
-	filter_info* filters = malloc(sizeof(filter_info) * (size_t) (filter_count + 1));
+	filter_info* filters = (filter_info*) malloc(sizeof(filter_info) * (size_t) (filter_count + 1));
 	filter_info* p = filters;
 	for (int i = 0; i < filter_count; i++) {
 		pbm_error_t error = pbm_parse_filter_str(argv[optind + i], p++);
