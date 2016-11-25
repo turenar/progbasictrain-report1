@@ -126,7 +126,7 @@ int main(int argc, char** argv) {
 
 pbm_error:
 	for (filter_info* p = opts.filters; p->args != NULL; p++) {
-		free(p->args);
+		pbm_free_filter_info(p);
 	}
 	free(opts.filters);
 	pbm_free(&a);

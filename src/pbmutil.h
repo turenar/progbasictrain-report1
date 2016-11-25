@@ -7,4 +7,5 @@ typedef struct {
 	char** args;
 } filter_info;
 
-pbm_error_t pbm_parse_filter_str(char*, filter_info*);
+pbm_error_t pbm_parse_filter_str(const char*, filter_info*);
+pbm_error_t pbm_free_filter_info(filter_info*);
