@@ -18,14 +18,16 @@ function check_compile1() {
 }
 
 function run_job() {
-	if which parallel >/dev/null 2>&1; then
+	if [ "$no_parallel" = 0 ]; then
 		echo misc/cibuild.sh -c "$@" >&9
 	else
+		echo "$@..."
 		check_compile1 "$@"
 	fi
 }
 
 function check_compile() {
+	local name
 	name="$1"
 	shift
 	run_job "${name}-debug" "$@" --enable-debug
@@ -44,13 +46,19 @@ fi
 
 cd "$(dirname "$0")/.."
 
-if which parallel >/dev/null 2>&1; then
-	test -e .cibuild.pipe && rm .cibuild.pipe
-	mkfifo .cibuild.pipe
-	parallel --halt=1 --progress -v <.cibuild.pipe &
-	parallel_pid=$!
-	exec 9>.cibuild.pipe
-	rm .cibuild.pipe
+if [ ${no_parallel:-0} = 0 ]; then
+	if which parallel >/dev/null 2>&1; then
+		echo 'using parallel'
+		test -e .cibuild.pipe && rm .cibuild.pipe
+		mkfifo .cibuild.pipe
+		parallel --halt=1 --progress -v <.cibuild.pipe &
+		parallel_pid=$!
+		exec 9>.cibuild.pipe
+		rm .cibuild.pipe
+		no_parallel=0
+	else
+		no_parallel=1
+	fi
 fi
 
 #./autogen.sh -v
