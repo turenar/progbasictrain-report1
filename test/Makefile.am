@@ -6,7 +6,7 @@ AM_TESTS_ENVIRONMENT = \
 else
 AM_TESTS_ENVIRONMENT =
 endif
-LDADD = ../src/libpbm.a ../externals/libcutest.a
+LDADD = ../src/libpbm.la ../externals/libcutest.a
 
 TESTS = pbm_test
 check_PROGRAMS = pbm_test

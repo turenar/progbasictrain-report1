@@ -144,6 +144,13 @@ AC_SUBST([gtk_LIBS])
 # Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for library functions.
+saved_LIBS="$LIBS"
+LIBS=
+AC_SEARCH_LIBS([sqrt], [m], [], [AC_MSG_ERROR([sqrt is not found])])
+mathlib_LIBS="$LIBS"
+AC_SUBST([mathlib_LIBS])
+LIBS="$saved_LIBS"
+
 AC_SUBST([CFLAGS])
 AC_SUBST([warn_flags])
 AC_CONFIG_FILES([Makefile externals/Makefile src/Makefile test/Makefile])
