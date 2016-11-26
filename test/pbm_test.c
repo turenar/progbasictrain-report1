@@ -37,14 +37,14 @@ static void test_pbmcodec_pbm_read(CuTest* tc) {
 static void test_pbmcodec_pbm_write(CuTest* tc) {
 	pbm_info info;
 	pbm_init(&info);
-#ifdef __WIN32__
+#ifdef _WIN32
 	FILE* rfp = fopen(testdatadir "/pbm/04_crlf.pbm", "r");
 #else
 	FILE* rfp = fopen(testdatadir "/pbm/04_lf.pbm", "r");
 #endif
 	pbmcodec_pbm_read(&info, rfp);
 
-#ifdef __WIN32__
+#ifdef _WIN32
 	FILE* wfp = fopen("pbm_test.write.tmp", "w+");
 #else
 	FILE* wfp = tmpfile();
