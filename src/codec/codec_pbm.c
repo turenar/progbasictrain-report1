@@ -18,6 +18,8 @@ pbm_error_t pbmcodec_pbm_read(pbm_info* info, FILE* fp) {
 		LOG(error, "invalid signature: %s", buf);
 		return PBMCODEC_INVALID_SIGNATURE;
 	}
+
+	pbm_free(info);
 	// line 2: width, height
 	res = fgets(buf, sizeof(buf), fp);
 	if (res == NULL) {
