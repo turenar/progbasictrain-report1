@@ -7,7 +7,7 @@
 
 
 pbm_error_t pbm_parse_filter_str(const char* str, filter_info* filter) {
-	size_t arg_count = 0;
+	size_t arg_count = 2; // [0] + NULL
 	size_t args_len = 0;
 	for (const char* p = str; *p != '\0'; p++) {
 		if (*p == ':') {
@@ -16,10 +16,10 @@ pbm_error_t pbm_parse_filter_str(const char* str, filter_info* filter) {
 		args_len++;
 	}
 
-	char* args_str = (char*) malloc(sizeof(char) * (args_len + 1));
+	char* const args_str = (char*) malloc(sizeof(char) * (args_len + 1));
 	strcpy(args_str, str);
 
-	char** filter_args = (char**) malloc(sizeof(char*) * arg_count);
+	char** const filter_args = (char**) malloc(sizeof(char*) * arg_count);
 	char** args_p = filter_args;
 	*args_p++ = args_str;
 	for (char* p = args_str; *p != '\0'; p++) {
