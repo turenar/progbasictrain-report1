@@ -26,6 +26,9 @@ void pbm_resize(pbm_info* info, int width, int height) {
 }
 
 void pbm_free(pbm_info* info) {
+	if (info->data == NULL) {
+		return;
+	}
 	uint8_t** p = info->data;
 	for (int y = 0; y < info->height; ++y) {
 		free(*p++);
