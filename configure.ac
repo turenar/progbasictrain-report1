@@ -41,23 +41,6 @@ fi
 CFLAGS="${debug_flag}${CFLAGS:+ }${CFLAGS-}"
 AM_CONDITIONAL([DEBUG], [test x$debug = xtrue])
 
-AC_ARG_ENABLE(maintainer-mode,
-	AS_HELP_STRING(
-		[--enable-maintainer-mode],
-		[enable compiler option for maintainer, default: no]),
-	[case "${enableval}" in
-		yes) maintainer_mode=true;;
-		no)  maintainer_mode=false;;
-		*)   AC_MSG_ERROR([bad value ${enableval} for --enable-maintainer-mode]);;
-	esac],
-	[maintainer_mode=false])
-
-if test "$maintainer_mode" = true; then
-	# -fsanitize=leak fails with linker error (-llsan is not found)
-	AX_CHECK_COMPILE_FLAG([-fsanitize=leak],
-						  [AX_CHECK_LINK_FLAG([-fsanitize=leak], [AX_APPEND_FLAG([-fsanitize=leak], [])])], [])
-fi
-
 AX_CHECK_COMPILE_FLAG([-Wall], [AX_APPEND_FLAG([-Wall], [warn_flags])], [])
 AX_CHECK_COMPILE_FLAG([-Wextra], [AX_APPEND_FLAG([-Wextra], [warn_flags])], [])
 AX_CHECK_COMPILE_FLAG([-Wconversion], [AX_APPEND_FLAG([-Wconversion], [warn_flags])], [])
@@ -78,6 +61,7 @@ AC_ARG_WITH([libpng],
 				*)   AC_MSG_ERROR([bad value ${withval} for --with-libpng]);;
 			esac],
 			[libpng_support=auto])
+use_libpng=0
 if test "x$libpng_support" = xno; then
 	: do nothing
 else
@@ -87,8 +71,10 @@ else
 	fi
 	if test "x$has_libpng" = xyes; then
 		AC_DEFINE([USE_LIBPNG], [1], [libpng])
+		use_libpng=1
 	fi
 fi
+AM_CONDITIONAL([USE_LIBPNG], [test $use_libpng = 1])
 AC_SUBST([libpng_CFLAGS])
 AC_SUBST([libpng_LIBS])
 
@@ -102,6 +88,7 @@ AC_ARG_WITH([libsixel],
 				*)   AC_MSG_ERROR([bad value ${withval} for --with-libsixel]);;
 			esac],
 			[libsixel_support=auto])
+use_libsixel=0
 if test "x$libsixel_support" = xno; then
 	: do nothing
 else
@@ -111,8 +98,10 @@ else
 	fi
 	if test "x$has_libsixel" = xyes; then
 		AC_DEFINE([USE_LIBSIXEL], [1], [libsixel])
+		use_libsixel=1
 	fi
 fi
+AM_CONDITIONAL([USE_LIBSIXEL], [test $use_libsixel = 1])
 AC_SUBST([libsixel_CFLAGS])
 AC_SUBST([libsixel_LIBS])
 
@@ -126,6 +115,7 @@ AC_ARG_WITH([gtk3],
 				*)   AC_MSG_ERROR([bad value ${withval} for --with-gtk]);;
 			esac],
 			[gtk_support=auto])
+use_gtk=0
 if test "x$gtk_support" = no; then
 	: do nothing
 else
@@ -134,9 +124,11 @@ else
 		AC_MSG_ERROR([--with-gtk requires gtk])
 	fi
 	if test "x$has_gtk" = xyes; then
+		use_gtk=1
 		AC_DEFINE([USE_GTK], [1], [gtk])
 	fi
 fi
+AM_CONDITIONAL([USE_GTK], [test $use_gtk = 1])
 AC_SUBST([gtk_CFLAGS])
 AC_SUBST([gtk_LIBS])
 # Checks for header files.
@@ -150,6 +142,24 @@ AC_SEARCH_LIBS([sqrt], [m], [], [AC_MSG_ERROR([sqrt is not found])])
 mathlib_LIBS="$LIBS"
 AC_SUBST([mathlib_LIBS])
 LIBS="$saved_LIBS"
+
+# leak sanitizer spends more time
+AC_ARG_ENABLE(maintainer-mode,
+	AS_HELP_STRING(
+		[--enable-maintainer-mode],
+		[enable compiler option for maintainer, default: no]),
+	[case "${enableval}" in
+		yes) maintainer_mode=true;;
+		no)  maintainer_mode=false;;
+		*)   AC_MSG_ERROR([bad value ${enableval} for --enable-maintainer-mode]);;
+	esac],
+	[maintainer_mode=false])
+
+if test "$maintainer_mode" = true; then
+	# -fsanitize=leak fails with linker error (-llsan is not found)
+	AX_CHECK_COMPILE_FLAG([-fsanitize=leak],
+						  [AX_CHECK_LINK_FLAG([-fsanitize=leak], [AX_APPEND_FLAG([-fsanitize=leak], [])])], [])
+fi
 
 AC_SUBST([CFLAGS])
 AC_SUBST([warn_flags])

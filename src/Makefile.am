@@ -23,10 +23,16 @@ libpbmfilter_la_SOURCES = filter/filter_common.c \
 libpbmfilter_la_LIBADD = $(mathlib_LIBS)
 libpbmcodec_la_SOURCES = codec/codecs.c \
 						 codec/codec_pbm.c \
-						 codec/codec_png.c \
-						 codec/codec_sixel.c \
-						 codec/codec_gtk.c \
 						 codec/codec_count.c
+if USE_LIBPNG
+libpbmcodec_la_SOURCES+= codec/codec_png.c
+endif
+if USE_LIBSIXEL
+libpbmcodec_la_SOURCES+= codec/codec_sixel.c
+endif
+if USE_GTK
+libpbmcodec_la_SOURCES+= codec/codec_gtk.c
+endif
 libpbmcodec_la_CFLAGS = $(AM_CFLAGS) $(libpng_CFLAGS) $(libsixel_CFLAGS) $(gtk_CFLAGS)
 libpbmcodec_la_LIBADD = $(libpng_LIBS) $(libsixel_LIBS) $(gtk_LIBS)
 libpbmcore_la_SOURCES = pbm.c \
