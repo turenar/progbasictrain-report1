@@ -15,6 +15,7 @@ function check_compile1() {
 	../../configure "$@" 2>&1 || _die cibuild.log
 	make check 2>&1 || _die cibuild.log
 	popd >/dev/null 2>&1
+	exec >&3
 }
 
 function run_job() {
