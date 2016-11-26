@@ -11,9 +11,17 @@ static void log_log(const char* file, int line, const char* color, const char* f
 			filename = p + 1;
 		}
 	}
+#ifdef WIN32
+	UNUSED_VAR(color);
+	fprintf(stderr, "[%s:%d] ", filename, line);
+	vfprintf(stderr, fmt, args);
+	fprintf(stderr, "\n");
+	fflush(stderr);
+#else
 	fprintf(stderr, "\033[%sm[%s:%d] ", color, filename, line);
 	vfprintf(stderr, fmt, args);
 	fprintf(stderr, "\033[0m\n");
+#endif
 }
 
 void log_debug(const char* file, int line, const char* fmt, ...) {
