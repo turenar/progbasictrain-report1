@@ -1,5 +1,6 @@
-#include <CuTest.h>
+#include "config.inc.h"
 
+#include <CuTest.h>
 #include "codec/codecs.h"
 
 #ifndef testdatadir
