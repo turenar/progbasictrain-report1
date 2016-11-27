@@ -126,7 +126,7 @@ AC_ARG_WITH([gtk3],
 use_gtk=no
 AC_MSG_CHECKING([whether gtk support is required])
 AC_MSG_RESULT([$gtk_support])
-if test "x$gtk_support" = no; then
+if test "x$gtk_support" = xno; then
 	: do nothing
 else
 	MY_CHECK_MODULES_LINK([gtk], [gtk+-3.0], [gtk_init])
