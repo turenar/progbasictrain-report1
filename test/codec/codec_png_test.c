@@ -9,6 +9,7 @@
 #define testdatadir "data"
 #endif
 
+#ifdef USE_LIBPNG
 static void check_png_load(CuTest* tc, pbm_error_t err, const char* file) {
 	LOG(info, "checking %s...", file);
 	FILE* fp = fopen(file, "r");
@@ -45,8 +46,12 @@ static void test_pbmcodec_png_read(CuTest* tc) {
 	CHECK_PNG_LOAD(PBM_SUCCESS, "png/02_rgb_alpha.png");
 }
 
+#endif
+
 CuSuite* get_pngcodec_test_suites() {
 	CuSuite* suite = CuSuiteNew();
+#ifdef USE_LIBPNG
 	SUITE_ADD_TEST(suite, test_pbmcodec_png_read);
+#endif
 	return suite;
 }
