@@ -141,13 +141,14 @@ pbm_error_t pbmcodec_png_write(const pbm_info* info, FILE* fp) {
 
 static void user_warning_fn(png_structp png_ptr, png_const_charp msg) {
 	UNUSED_VAR(png_ptr);
-	LOG(warn, msg);
+	LOG(warn, "libpng: %s", msg);
 }
 
 static void user_error_fn(png_structp png_ptr, png_const_charp msg) {
 	UNUSED_VAR(png_ptr);
-	LOG(error, msg);
-	exit(1); // libpngはnoreturnを要求している
+	LOG(error, "libpng: %s", msg);
+
+	png_longjmp(png_ptr, 1);
 }
 
 
