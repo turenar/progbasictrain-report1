@@ -161,6 +161,23 @@ if test "$maintainer_mode" = true; then
 						  [AX_CHECK_LINK_FLAG([-fsanitize=leak], [AX_APPEND_FLAG([-fsanitize=leak], [])])], [])
 fi
 
+AC_ARG_ENABLE(coverage,
+	AS_HELP_STRING(
+		[--enable-coverage],
+		[enable coverage option, default: no]),
+	[case "${enableval}" in
+		yes)  coverage_mode=true;;
+		no)   coverage_mode=false;;
+		*)    AC_MSG_ERROR([bad value ${enableval} for --enable-coverage]);;
+	esac],
+	[coverage_mode=false])
+
+if test "$coverage_mode" = true; then
+	AX_CHECK_COMPILE_FLAG([-fprofile-arcs -ftest-coverage],
+						  [AX_APPEND_FLAG([-fprofile-arcs -ftest-coverage], [])],
+						  [AC_MSG_ERROR([--enable-coverage passed but compiler not supported])])
+fi
+
 AC_SUBST([CFLAGS])
 AC_SUBST([warn_flags])
 AC_CONFIG_FILES([Makefile externals/Makefile src/Makefile test/Makefile])
