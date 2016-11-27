@@ -6,9 +6,14 @@ AM_TESTS_ENVIRONMENT = \
 else
 AM_TESTS_ENVIRONMENT =
 endif
-LDADD = ../src/libpbm.la ../externals/libcutest.a
 
-TESTS = pbm_test
-check_PROGRAMS = pbm_test
+TESTS = pbmcore_test pbmcodec_test
+check_PROGRAMS = pbmcore_test pbmcodec_test
+LDADD = ../externals/libcutest.a
 
-pbm_test_SOURCES = pbm_test.c
+pbmcore_test_SOURCES = test_pbmcore.c \
+					   pbm_test.c
+pbmcore_test_LDADD = ../src/libpbmcore.la $(LDADD)
+pbmcodec_test_SOURCES = codec/test_pbmcodec.c \
+						codec/codec_pbm_test.c
+pbmcodec_test_LDADD = ../src/libpbmcodec.la $(LDADD)

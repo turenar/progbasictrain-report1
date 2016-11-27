@@ -1,60 +1,30 @@
 #include "config.inc.h"
 
-#include <CuTest.h>
+#include "test_pbmcore.h"
 #include "codec/codecs.h"
 
 #ifndef testdatadir
 #define testdatadir "data"
 #endif
 
-static int check_file_equals(FILE*, FILE*);
-
-static void test_pbmcodec_pbm_read(CuTest* tc) {
-#define CHECK_PBM_LOAD1(expected, file) { \
-    FILE* fp = fopen(file, "r"); \
-        if(!fp){CuFail(tc,"Could not load: " file);} \
-        else{ CuAssertIntEquals(tc, expected, pbmcodec_pbm_read(&info, fp));}}
-#define CHECK_PBM_LOAD(expected, file) CHECK_PBM_LOAD1(expected, testdatadir "/" file)
+static void test_pbm_init(CuTest* tc) {
 	pbm_info info;
 	pbm_init(&info);
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_empty.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_invalid_sig1.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_invalid_sig2.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_extra_header.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_minus_size.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_no_height.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_no_width.pbm")
-	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/03_extra_data.pbm")
-	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/03_extra_row.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_lack_data.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_lack_row.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_invalid_data.pbm")
-	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/04_crlf.pbm")
-	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/04_lf.pbm")
-	pbm_free(&info);
+	CuAssertPtrEquals(tc, NULL, info.data);
 }
 
-static void test_pbmcodec_pbm_write(CuTest* tc) {
+static void test_pbm_resize(CuTest* tc) {
 	pbm_info info;
 	pbm_init(&info);
-#ifdef _WIN32
-	FILE* rfp = fopen(testdatadir "/pbm/04_crlf.pbm", "r");
-#else
-	FILE* rfp = fopen(testdatadir "/pbm/04_lf.pbm", "r");
-#endif
-	pbmcodec_pbm_read(&info, rfp);
-
-#ifdef _WIN32
-	FILE* wfp = fopen("pbm_test.write.tmp", "w+");
-#else
-	FILE* wfp = tmpfile();
-#endif
-	CuAssertPtrNotNull(tc, wfp);
-	pbmcodec_pbm_write(&info, wfp);
-
-	fseek(rfp, 0, SEEK_SET);
-	fseek(wfp, 0, SEEK_SET);
-	CuAssertIntEquals(tc, 1, check_file_equals(rfp, wfp));
+	pbm_resize(&info, 2, 2);
+	CuAssertIntEquals(tc, 2, info.width);
+	CuAssertIntEquals(tc, 2, info.height);
+	CuAssertPtrNotNull(tc, info.data);
+	// should free check... but, -fsanitizer=leak can do...?
+	pbm_resize(&info, 1, 1);
+	CuAssertIntEquals(tc, 1, info.width);
+	CuAssertIntEquals(tc, 1, info.height);
+	CuAssertPtrNotNull(tc, info.data);
 	pbm_free(&info);
 }
 
@@ -64,43 +34,39 @@ static void test_pbm_free(CuTest* tc) {
 	pbm_free(&info);
 	CuAssertPtrEquals(tc, NULL, info.data);
 
-	FILE* rfp = fopen(testdatadir "/pbm/04_lf.pbm", "r");
-	pbmcodec_pbm_read(&info, rfp);
+	pbm_resize(&info, 2, 2);
 	pbm_free(&info);
 	CuAssertPtrEquals(tc, NULL, info.data);
 }
 
-static int check_file_equals(FILE* afp, FILE* bfp) {
-	int a, b;
-	for (;;) {
-		a = fgetc(afp);
-		b = fgetc(bfp);
-		if (a != b) {
-			return 0;
-		} else if (a == EOF) {
-			return 1;
-		}
-	}
+static void test_pbm_copy(CuTest* tc) {
+	pbm_info a;
+	pbm_info b;
+	pbm_init(&a);
+	pbm_init(&b);
+	pbm_resize(&a, 2, 2);
+	a.data[0][0] = 1;
+	a.data[0][1] = 0;
+	a.data[1][0] = 0;
+	a.data[1][1] = 1;
+
+	pbm_copy(&a, &b);
+	CuAssertIntEquals(tc, 2, b.width);
+	CuAssertIntEquals(tc, 2, b.height);
+	CuAssertIntEquals(tc, 1, b.data[0][0]);
+	CuAssertIntEquals(tc, 0, b.data[0][1]);
+	CuAssertIntEquals(tc, 0, b.data[1][0]);
+	CuAssertIntEquals(tc, 1, b.data[1][1]);
+
+	pbm_free(&a);
+	pbm_free(&b);
 }
 
-static CuSuite* get_pbm_test_suites() {
+CuSuite* get_pbm_test_suites() {
 	CuSuite* suite = CuSuiteNew();
-	SUITE_ADD_TEST(suite, test_pbmcodec_pbm_read);
-	SUITE_ADD_TEST(suite, test_pbmcodec_pbm_write);
+	SUITE_ADD_TEST(suite, test_pbm_init);
+	SUITE_ADD_TEST(suite, test_pbm_copy);
 	SUITE_ADD_TEST(suite, test_pbm_free);
+	SUITE_ADD_TEST(suite, test_pbm_resize);
 	return suite;
-}
-
-int main() {
-	CuString* output = CuStringNew();
-	CuSuite* suite = CuSuiteNew();
-
-	CuSuiteAddSuite(suite, get_pbm_test_suites());
-
-	CuSuiteRun(suite);
-	CuSuiteSummary(suite, output);
-	CuSuiteDetails(suite, output);
-	printf("%s\n", output->buffer);
-
-	return suite->failCount != 0;
 }
