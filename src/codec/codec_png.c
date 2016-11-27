@@ -177,7 +177,11 @@ static void user_error_fn(png_structp png_ptr, png_const_charp msg) {
 	UNUSED_VAR(png_ptr);
 	LOG(error, "libpng: %s", msg);
 
+#if PNG_LIBPNG_VER >= 10500
 	png_longjmp(png_ptr, 1);
+#else
+	longjmp(png_ptr->jmpbuf, 1);
+#endif
 }
 
 
