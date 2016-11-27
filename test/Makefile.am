@@ -15,5 +15,6 @@ pbmcore_test_SOURCES = test_pbmcore.c \
 					   pbm_test.c
 pbmcore_test_LDADD = ../src/libpbmcore.la $(LDADD)
 pbmcodec_test_SOURCES = codec/test_pbmcodec.c \
-						codec/codec_pbm_test.c
+						codec/codec_pbm_test.c \
+						codec/codec_png_test.c
 pbmcodec_test_LDADD = ../src/libpbmcodec.la $(LDADD)

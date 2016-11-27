@@ -2,4 +2,5 @@
 
 #include <CuTest.h>
 
-CuSuite* get_pbm_test_suites();
+CuSuite* get_pbmcodec_test_suites();
+CuSuite* get_pngcodec_test_suites();

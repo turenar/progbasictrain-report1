@@ -7,7 +7,8 @@ int main() {
 	CuString* output = CuStringNew();
 	CuSuite* suite = CuSuiteNew();
 
-	CuSuiteAddSuite(suite, get_pbm_test_suites());
+	CuSuiteAddSuite(suite, get_pbmcodec_test_suites());
+	CuSuiteAddSuite(suite, get_pngcodec_test_suites());
 
 	CuSuiteRun(suite);
 	CuSuiteSummary(suite, output);
