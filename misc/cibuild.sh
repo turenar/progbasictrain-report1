@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
 function _die() {
-	cat $1 >&3
+	test "$no_parallel" = 0 && cat $1 >&3
 	exit 1
 }
 
@@ -10,12 +10,16 @@ function check_compile1() {
 	mkdir bin/$1
 	pushd bin/$1 >/dev/null 2>&1
 	shift
-	exec 3>&1
-	exec >cibuild.log
-	../../configure "$@" 2>&1 || _die cibuild.log
+	if [ "$no_parallel" = 0 ]; then
+		exec 3>&1
+		exec >cibuild.log
+	fi
+	../../configure ${CONF_OPTS:-} "$@" 2>&1 || _die cibuild.log
 	make check 2>&1 || _die cibuild.log
 	popd >/dev/null 2>&1
-	exec >&3
+	if [ "$no_parallel" = 0 ]; then
+		exec >&3
+	fi
 }
 
 function run_job() {
@@ -87,6 +91,5 @@ check_compile cibuild-native+xx  CC=g++ CFLAGS='-std=c++11' --without-gtk3 --wit
 
 if ${parallel_pid+:} false; then
 	exec 9>&-
-	wait ${parallel_pid}
-	exit $?
+	wait ${parallel_pid} || exit $?
 fi
