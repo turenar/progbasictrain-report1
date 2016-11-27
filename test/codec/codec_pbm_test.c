@@ -39,6 +39,7 @@ static void test_pbmcodec_pbm_read(CuTest* tc) {
 	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_empty.pbm");
 	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_invalid_sig1.pbm");
 	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_invalid_sig2.pbm");
+	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_no_size.pbm");
 	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_extra_header.pbm");
 	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_minus_size.pbm");
 	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_no_height.pbm");
@@ -48,6 +49,8 @@ static void test_pbmcodec_pbm_read(CuTest* tc) {
 	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_lack_data.pbm");
 	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_lack_row.pbm");
 	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_invalid_data.pbm");
+	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_lack_col.pbm");
+	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_invalid_delimiter.pbm");
 	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/04_crlf.pbm");
 	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/04_lf.pbm");
 }
