@@ -8,9 +8,7 @@ AC_CONFIG_HEADERS([src/config.h])
 AC_CONFIG_AUX_DIR([m4/tools])
 AC_CONFIG_MACRO_DIR([m4/generated])
 
-AC_CANONICAL_BUILD
-AC_CANONICAL_HOST
-AC_CANONICAL_TARGET
+AC_CANONICAL_SYSTEM
 
 LT_INIT([disable-shared])
 AM_INIT_AUTOMAKE([foreign subdir-objects])
