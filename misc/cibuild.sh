@@ -96,5 +96,6 @@ fi
 
 if which gcovr >/dev/null 2>&1; then
 	check_compile1 cibuild-coverage --enable-debug --enable-coverage
-	gcovr --xml --output=coverage.xml bin/cibuild-coverage/src
+	cd bin/cibuild-coverage
+	gcovr --xml --output=coverage.xml src
 fi
