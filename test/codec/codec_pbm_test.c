@@ -2,6 +2,7 @@
 
 #include <CuTest.h>
 #include "codec/codecs.h"
+#include "logger.h"
 
 #ifndef testdatadir
 #define testdatadir "data"
@@ -9,29 +10,46 @@
 
 static int check_file_equals(FILE*, FILE*);
 
-static void test_pbmcodec_pbm_read(CuTest* tc) {
-#define CHECK_PBM_LOAD1(expected, file) { \
-    FILE* fp = fopen(file, "r"); \
-        if(!fp){CuFail(tc,"Could not load: " file);} \
-        else{ CuAssertIntEquals(tc, expected, pbmcodec_pbm_read(&info, fp));}}
-#define CHECK_PBM_LOAD(expected, file) CHECK_PBM_LOAD1(expected, testdatadir "/" file)
+static void check_pbm_load(CuTest* tc, pbm_error_t err, const char* file, const char* msg) {
+	LOG(info, "checking %s...", file);
+	FILE* fp = fopen(file, "r");
+	CuAssertPtrNotNullMsg(tc, msg, fp);
+	if (!fp) {
+		return;
+	}
 	pbm_info info;
 	pbm_init(&info);
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_empty.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_invalid_sig1.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_invalid_sig2.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_extra_header.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_minus_size.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_no_height.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_no_width.pbm")
-	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/03_extra_data.pbm")
-	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/03_extra_row.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_lack_data.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_lack_row.pbm")
-	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_invalid_data.pbm")
-	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/04_crlf.pbm")
-	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/04_lf.pbm")
+	pbm_error_t result = pbmcodec_pbm_read(&info, fp);
+	CuAssertIntEquals(tc, err, result);
+	if (result == PBM_SUCCESS) {
+		CuAssertPtrNotNull(tc, info.data);
+		CuAssertIntEquals(tc, 2, info.width);
+		CuAssertIntEquals(tc, 2, info.height);
+		CuAssertIntEquals(tc, 1, info.data[0][0]);
+		CuAssertIntEquals(tc, 1, info.data[0][1]);
+		CuAssertIntEquals(tc, 1, info.data[1][0]);
+		CuAssertIntEquals(tc, 1, info.data[1][1]);
+	}
 	pbm_free(&info);
+}
+
+static void test_pbmcodec_pbm_read(CuTest* tc) {
+#define CHECK_PBM_LOAD1(expected, file) check_pbm_load(tc, expected, file, "could not open " file)
+#define CHECK_PBM_LOAD(expected, file) CHECK_PBM_LOAD1(expected, testdatadir "/" file)
+	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_empty.pbm");
+	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_invalid_sig1.pbm");
+	CHECK_PBM_LOAD(PBMCODEC_INVALID_SIGNATURE, "pbm/01_invalid_sig2.pbm");
+	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_extra_header.pbm");
+	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_minus_size.pbm");
+	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_no_height.pbm");
+	CHECK_PBM_LOAD(PBMCODEC_INVALID_HEADER, "pbm/02_no_width.pbm");
+	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/03_extra_data.pbm");
+	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/03_extra_row.pbm");
+	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_lack_data.pbm");
+	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_lack_row.pbm");
+	CHECK_PBM_LOAD(PBMCODEC_INVALID_DATA, "pbm/03_invalid_data.pbm");
+	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/04_crlf.pbm");
+	CHECK_PBM_LOAD(PBM_SUCCESS, "pbm/04_lf.pbm");
 }
 
 static void test_pbmcodec_pbm_write(CuTest* tc) {
@@ -71,7 +89,7 @@ static int check_file_equals(FILE* afp, FILE* bfp) {
 	}
 }
 
-CuSuite* get_pbm_test_suites() {
+CuSuite* get_pbmcodec_test_suites() {
 	CuSuite* suite = CuSuiteNew();
 	SUITE_ADD_TEST(suite, test_pbmcodec_pbm_read);
 	SUITE_ADD_TEST(suite, test_pbmcodec_pbm_write);
