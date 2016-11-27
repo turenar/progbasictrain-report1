@@ -52,6 +52,7 @@ AX_CHECK_COMPILE_FLAG([-pedantic], [AX_APPEND_FLAG([-pedantic], [warn_flags])], 
 AX_CHECK_LINK_FLAG([-rdynamic], [AX_APPEND_FLAG([-rdynamic], [LDFLAGS])], [])
 
 # Checks for libraries.
+PKG_PROG_PKG_CONFIG
 
 AC_ARG_WITH([libpng],
 			[AS_HELP_STRING([--with-libpng],
