@@ -9,6 +9,10 @@
 #include <png.h>
 #include "logger.h"
 
+#ifndef PNG_ERROR_ACTION_WARN
+#define PNG_ERROR_ACTION_WARN 2
+#endif
+
 #define PNG_HEADER_BYTES 8
 
 static void user_warning_fn(png_structp, png_const_charp);
