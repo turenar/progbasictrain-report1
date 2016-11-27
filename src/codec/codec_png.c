@@ -62,23 +62,43 @@ pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 	uint8_t** row_p = info->data;
 
 	png_byte color_type = png_get_color_type(png_ptr, info_ptr);
-	if (color_type == PNG_COLOR_TYPE_RGB || color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
+	if (color_type == PNG_COLOR_TYPE_RGB) {
 		LOG(warn, "converting rgb png to gray");
-		png_set_rgb_to_gray(png_ptr, PNG_ERROR_ACTION_WARN, -1, -1);
 	}
-	assert(png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_GRAY);
+	assert(color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_RGB);
 
 	png_byte bit_depth = png_get_bit_depth(png_ptr, info_ptr);
 	png_bytepp rows = png_get_rows(png_ptr, info_ptr);
 	png_byte threshold = (png_byte) (1 << (bit_depth - 1));
-	for (int y = 0; y < info->height; ++y) {
-		uint8_t* col_p = *row_p++;
-		png_bytep row = *rows++;
-		for (int x = 0; x < info->width; ++x) {
-			// png-grayscale 0: black 255: white (if 8bit)
-			// pbm-monochrome 0: white 1: black :-P
-			*col_p++ = (uint8_t) (*row++ <= threshold);
-		}
+	switch (color_type) {
+		case PNG_COLOR_TYPE_GRAY:
+			for (int y = 0; y < info->height; ++y) {
+				uint8_t* col_p = *row_p++;
+				png_bytep row = *rows++;
+				for (int x = 0; x < info->width; ++x) {
+					// png-grayscale 0: black 255: white (if 8bit)
+					// pbm-monochrome 0: white 1: black :-P
+					*col_p++ = (uint8_t) (*row++ <= threshold);
+				}
+			}
+			break;
+		case PNG_COLOR_TYPE_RGB:
+			for (int y = 0; y < info->height; ++y) {
+				uint8_t* col_p = *row_p++;
+				png_bytep row = *rows++;
+				for (int x = 0; x < info->width; ++x) {
+					// png-grayscale 0: black 255: white (if 8bit)
+					// pbm-monochrome 0: white 1: black :-P
+					int r = *row++;
+					int g = *row++;
+					int b = *row++;
+					*col_p++ = (uint8_t) ((r + g + b) <= (128 * 3));
+				}
+			}
+			break;
+		default:
+			LOG(error, "assertion failed; unsupported png color type: %d", color_type);
+			return PBMCODEC_INVALID_HEADER;
 	}
 	return PBM_SUCCESS;
 }
