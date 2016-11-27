@@ -26,7 +26,7 @@ typedef struct icm_param_tag {
 } icm_param;
 
 typedef struct {
-	char* name;
+	const char* name;
 	icm_weight_method method;
 } name_method_map_t;
 name_method_map_t name_method_map[] = {
