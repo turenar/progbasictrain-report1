@@ -20,6 +20,8 @@ static void user_error_fn(png_structp, png_const_charp);
 
 pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 	png_byte header[PNG_HEADER_BYTES];
+	pbm_error_t result;
+
 	if (fread(header, 1, PNG_HEADER_BYTES, fp) < sizeof(PNG_HEADER_BYTES)) {
 		LOG(error, "invalid signature");
 		return PBMCODEC_INVALID_SIGNATURE;
@@ -37,15 +39,14 @@ pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 	}
 	png_infop info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr) {
-		png_destroy_read_struct(&png_ptr, NULL, NULL);
 		LOG(error, "libpng initialization failed");
-		return PBM_SYSTEM_ERROR;
+		result = PBM_SYSTEM_ERROR;
+		goto error;
 	}
 	// エラー処理用
 	if (setjmp(png_jmpbuf(png_ptr))) {
-		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-		LOG(error, "libpng failed");
-		return PBM_SYSTEM_ERROR;
+		result = PBM_SYSTEM_ERROR;
+		goto error;
 	}
 
 	png_init_io(png_ptr, fp);
@@ -55,7 +56,8 @@ pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 
 	if (png_get_interlace_type(png_ptr, info_ptr) != PNG_INTERLACE_NONE) {
 		LOG(error, "interlaced png not supported");
-		return PBMCODEC_INVALID_HEADER;
+		result = PBMCODEC_INVALID_HEADER;
+		goto error;
 	}
 
 	pbm_resize(info, (int) png_get_image_width(png_ptr, info_ptr), (int) png_get_image_height(png_ptr, info_ptr));
@@ -98,9 +100,16 @@ pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 			break;
 		default:
 			LOG(error, "assertion failed; unsupported png color type: %d", color_type);
-			return PBMCODEC_INVALID_HEADER;
+			result = PBMCODEC_INVALID_HEADER;
+			goto error;
 	}
-	return PBM_SUCCESS;
+	result = PBM_SUCCESS;
+	goto clean;
+error:
+	pbm_free(info);
+clean:
+	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+	return result;
 }
 
 pbm_error_t pbmcodec_png_write(const pbm_info* info, FILE* fp) {
