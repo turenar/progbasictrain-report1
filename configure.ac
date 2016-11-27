@@ -192,3 +192,14 @@ AC_SUBST([CFLAGS])
 AC_SUBST([warn_flags])
 AC_CONFIG_FILES([Makefile externals/Makefile src/Makefile test/Makefile])
 AC_OUTPUT
+
+if test "x$pkg_check_modules_dummy_defined" = x1; then
+	use_libpng="no (pkg-config is not installed?)"
+	use_libsixel="no (pkg-config is not installed?)"
+	use_gtk="no (pkg-config is not installed?)"
+fi
+echo "------------------------------------"
+echo "libpng:        $use_libpng"
+echo "libsixel:      $use_libsixel"
+echo "gtk:           $use_gtk"
+echo "CFLAGS:        $warn_flags $CFLAGS"
