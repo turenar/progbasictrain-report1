@@ -13,7 +13,11 @@ AC_CANONICAL_SYSTEM
 LT_INIT([disable-shared])
 AM_INIT_AUTOMAKE([foreign subdir-objects])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
-
+m4_ifdef([PKG_CHECK_MODULES],
+	 [pkg_check_modules_dummy_defined=0],
+	 [m4_define([PKG_CHECK_MODULES], [$4])
+	 pkg_check_modules_dummy_defined=1
+	 AC_MSG_WARN([[PKG_CHECK_MODULES is not found! You must install pkg-config for extra functions]])])
 AC_PROG_CC
 CFLAGS="$__conf_saved_cflags"
 
