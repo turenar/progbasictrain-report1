@@ -18,6 +18,7 @@ m4_ifdef([PKG_CHECK_MODULES],
 	 [m4_define([PKG_CHECK_MODULES], [$4])
 	 pkg_check_modules_dummy_defined=1
 	 AC_MSG_WARN([[PKG_CHECK_MODULES is not found! You must install pkg-config for extra functions]])])
+__conf_saved_cflags="$CFLAGS"
 AC_PROG_CC
 CFLAGS="$__conf_saved_cflags"
 
