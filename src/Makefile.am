@@ -20,7 +20,7 @@ libpbmfilter_la_SOURCES = filter/filter_common.c \
 						  filter/filter_noise.c \
 						  filter/filter_diff.c \
 						  filter/filters.c
-libpbmfilter_la_LIBADD = $(mathlib_LIBS)
+libpbmfilter_la_LIBADD = libpbmcore.la $(mathlib_LIBS)
 libpbmcodec_la_SOURCES = codec/codecs.c \
 						 codec/codec_pbm.c \
 						 codec/codec_count.c
@@ -34,6 +34,6 @@ if USE_GTK
 libpbmcodec_la_SOURCES+= codec/codec_gtk.c
 endif
 libpbmcodec_la_CFLAGS = $(AM_CFLAGS) $(libpng_CFLAGS) $(libsixel_CFLAGS) $(gtk_CFLAGS)
-libpbmcodec_la_LIBADD = $(libpng_LIBS) $(libsixel_LIBS) $(gtk_LIBS)
+libpbmcodec_la_LIBADD = libpbmcore.la $(libpng_LIBS) $(libsixel_LIBS) $(gtk_LIBS)
 libpbmcore_la_SOURCES = pbm.c \
 						logger.c
