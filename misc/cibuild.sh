@@ -96,6 +96,10 @@ fi
 
 if which gcovr >/dev/null 2>&1; then
 	check_compile1 cibuild-coverage --enable-debug --enable-coverage
-	cd bin/cibuild-coverage
-	gcovr --xml --output=coverage.xml src
+	cd bin/cibuild-coverage/src
+	gcovr --xml --output=coverage.xml
+	cd ../../..
+	proj_dir="$(pwd)"
+	dot_dir="$(echo "${proj_dir}" | sed -e 's|/|.|g')"
+	sed -i.bak -e "s@${proj_dir}/@@g" -e "s@${dot_dir}@@g" bin/cibuild-coverage/src/coverage.xml
 fi
