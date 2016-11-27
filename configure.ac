@@ -63,20 +63,23 @@ AC_ARG_WITH([libpng],
 				*)   AC_MSG_ERROR([bad value ${withval} for --with-libpng]);;
 			esac],
 			[libpng_support=auto])
-use_libpng=0
+use_libpng=no
+
+AC_MSG_CHECKING([whether libpng support is required])
+AC_MSG_RESULT([$libpng_support])
 if test "x$libpng_support" = xno; then
 	: do nothing
 else
-	PKG_CHECK_MODULES([libpng], [libpng], [has_libpng=yes], [has_libpng=no])
+	MY_CHECK_MODULES_LINK([libpng], [libpng], [png_free])
 	if test "x$libpng_support$has_libpng" = "xyesno"; then
 		AC_MSG_ERROR([--with-libpng requires libpng])
 	fi
 	if test "x$has_libpng" = xyes; then
 		AC_DEFINE([USE_LIBPNG], [1], [libpng])
-		use_libpng=1
+		use_libpng=yes
 	fi
 fi
-AM_CONDITIONAL([USE_LIBPNG], [test $use_libpng = 1])
+AM_CONDITIONAL([USE_LIBPNG], [test $use_libpng = yes])
 AC_SUBST([libpng_CFLAGS])
 AC_SUBST([libpng_LIBS])
 
@@ -84,26 +87,29 @@ AC_ARG_WITH([libsixel],
 			[AS_HELP_STRING([--with-libsixel],
 							[support png r/w, default: auto])],
 			[case "${withval}" in
-				yes) libsixel_support=true;;
-				no)  libsixel_support=false;;
+				yes) libsixel_support=yes;;
+				no)  libsixel_support=no;;
 				auto)libsixel_support=auto;;
 				*)   AC_MSG_ERROR([bad value ${withval} for --with-libsixel]);;
 			esac],
 			[libsixel_support=auto])
-use_libsixel=0
+use_libsixel=no
+
+AC_MSG_CHECKING([whether libsixel support is required])
+AC_MSG_RESULT([$libsixel_support])
 if test "x$libsixel_support" = xno; then
 	: do nothing
 else
-	PKG_CHECK_MODULES([libsixel], [libsixel], [has_libsixel=yes], [has_libsixel=no])
+	MY_CHECK_MODULES_LINK([libsixel], [libsixel >= 1.6], [sixel_encoder_new])
 	if test "x$libsixel_support$has_libsixel" = "xyesno"; then
 		AC_MSG_ERROR([--with-libsixel requires libsixel])
 	fi
 	if test "x$has_libsixel" = xyes; then
 		AC_DEFINE([USE_LIBSIXEL], [1], [libsixel])
-		use_libsixel=1
+		use_libsixel=yes
 	fi
 fi
-AM_CONDITIONAL([USE_LIBSIXEL], [test $use_libsixel = 1])
+AM_CONDITIONAL([USE_LIBSIXEL], [test $use_libsixel = yes])
 AC_SUBST([libsixel_CFLAGS])
 AC_SUBST([libsixel_LIBS])
 
@@ -111,26 +117,28 @@ AC_ARG_WITH([gtk3],
 			[AS_HELP_STRING([--with-gtk3],
 							[support png r/w, default: auto])],
 			[case "${withval}" in
-				yes) gtk_support=true;;
-				no)  gtk_support=false;;
+				yes) gtk_support=yes;;
+				no)  gtk_support=no;;
 				auto)gtk_support=auto;;
 				*)   AC_MSG_ERROR([bad value ${withval} for --with-gtk]);;
 			esac],
 			[gtk_support=auto])
-use_gtk=0
+use_gtk=no
+AC_MSG_CHECKING([whether gtk support is required])
+AC_MSG_RESULT([$gtk_support])
 if test "x$gtk_support" = no; then
 	: do nothing
 else
-	PKG_CHECK_MODULES([gtk], [gtk+-3.0], [has_gtk=yes], [has_gtk=no])
+	MY_CHECK_MODULES_LINK([gtk], [gtk+-3.0], [gtk_init])
 	if test "x$gtk_support$has_gtk" = "xyesno"; then
 		AC_MSG_ERROR([--with-gtk requires gtk])
 	fi
 	if test "x$has_gtk" = xyes; then
-		use_gtk=1
+		use_gtk=yes
 		AC_DEFINE([USE_GTK], [1], [gtk])
 	fi
 fi
-AM_CONDITIONAL([USE_GTK], [test $use_gtk = 1])
+AM_CONDITIONAL([USE_GTK], [test $use_gtk = yes])
 AC_SUBST([gtk_CFLAGS])
 AC_SUBST([gtk_LIBS])
 # Checks for header files.
