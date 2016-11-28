@@ -23,10 +23,10 @@ add_executable(denoiser src/denoiser_main.c src/codec/codec_pbm.c test/filter/fi
 target_link_libraries(denoiser pbmcore pbmfilter pbmcodecs)
 add_executable(general src/general_main.c)
 target_link_libraries(general pbmcore pbmfilter pbmcodecs)
-add_executable(pbmcore_test EXCLUDE_FROM_ALL test/pbm_test.c test/test_pbmcore.h test/test_pbmcore.c)
+add_executable(pbmcore_test EXCLUDE_FROM_ALL test/pbm_test.c test/test_pbmcore.h test/test_pbmcore.c test/test_main.c test/test_main.h)
 include_directories(pbmcore_test src)
 add_executable(pbmcodec_test EXCLUDE_FROM_ALL
-        test/codec/codec_pbm_test.c test/codec/test_pbmcodec.c test/codec/test_pbmcodec.h test/codec/codec_png_test.c)
+        test/codec/codec_pbm_test.c test/codec/test_pbmcodec.c test/codec/test_pbmcodec.h test/codec/codec_png_test.c test/test_main.c test/test_main.h)
 include_directories(pbmcodec_test src)
-add_executable(pbmfilter_test EXCLUDE_FROM_ALL test/filter/filter_noise_test.c test/filter/test_pbmfilter.c test/filter/test_pbmfilter.h)
+add_executable(pbmfilter_test EXCLUDE_FROM_ALL test/filter/filter_noise_test.c test/filter/test_pbmfilter.c test/filter/test_pbmfilter.h test/test_main.c test/test_main.h)
 include_directories(pbmfilter_test src)

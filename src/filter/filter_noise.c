@@ -8,7 +8,10 @@
 static uint8_t _pbmfilter_noise_point(uint8_t, void*);
 
 pbm_error_t pbmfilter_noise(const pbm_info* in, pbm_info* out, char** args) {
-	pbm_resize(out, in->width, in->height);
+	pbm_error_t res = pbm_resize(out, in->width, in->height);
+	if (res) {
+		return res;
+	}
 
 	double prob = 0.1;
 	if (args[0] != NULL) {
