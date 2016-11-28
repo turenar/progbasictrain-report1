@@ -20,6 +20,6 @@ typedef enum pbm_error_tag{
 } pbm_error_t;
 
 void pbm_init(pbm_info*);
-void pbm_resize(pbm_info*, int width, int height);
+pbm_error_t pbm_resize(pbm_info*, int width, int height);
 void pbm_free(pbm_info*);
 void pbm_copy(const pbm_info*, pbm_info*);

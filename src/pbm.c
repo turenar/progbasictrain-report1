@@ -10,19 +10,42 @@ void pbm_init(pbm_info*info){
 	info->data = NULL;
 }
 
-void pbm_resize(pbm_info* info, int width, int height) {
+pbm_error_t pbm_resize(pbm_info* info, int width, int height) {
 	if (info->data != NULL) {
 		pbm_free(info);
 	}
 	uint8_t** data = (uint8_t**) malloc(sizeof(uint8_t*) * (size_t) height);
+	if (data == NULL) {
+		return PBM_ALLOCATION_FAILED;
+	}
+
 	uint8_t** p = data;
+	pbm_error_t result;
 	for (int y = 0; y < height; ++y) {
-		*p++ = (uint8_t*) malloc(sizeof(uint8_t) * (size_t) width);
+		uint8_t* q = (uint8_t*) malloc(sizeof(uint8_t) * (size_t) width);
+		if (q == NULL) {
+			result = PBM_ALLOCATION_FAILED;
+			goto error;
+		}
+		*p++ = q;
 	}
 
 	info->width = width;
 	info->height = height;
 	info->data = data;
+	return PBM_SUCCESS;
+
+error:
+	p = data;
+	for (int y = 0; y < height; ++y) {
+		uint8_t* q = *p++;
+		if (q == NULL) {
+			break;
+		}
+		free(q);
+	}
+	free(p);
+	return result;
 }
 
 void pbm_free(pbm_info* info) {
