@@ -7,8 +7,8 @@ else
 AM_TESTS_ENVIRONMENT =
 endif
 
-TESTS = pbmcore_test pbmcodec_test
-check_PROGRAMS = pbmcore_test pbmcodec_test
+TESTS = pbmcore_test pbmcodec_test pbmfilter_test
+check_PROGRAMS = pbmcore_test pbmcodec_test pbmfilter_test
 LDADD = ../externals/libcutest.a
 
 pbmcore_test_SOURCES = test_pbmcore.c \
@@ -18,3 +18,6 @@ pbmcodec_test_SOURCES = codec/test_pbmcodec.c \
 						codec/codec_pbm_test.c \
 						codec/codec_png_test.c
 pbmcodec_test_LDADD = ../src/libpbmcodec.la $(LDADD)
+pbmfilter_test_SOURCES = filter/test_pbmfilter.c \
+						 filter/filter_noise_test.c
+pbmfilter_test_LDADD = ../src/libpbmfilter.la $(LDADD)
