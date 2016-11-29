@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function _die() {
-	test "$no_parallel" = 0 && cat $1 >&3
+	test "$no_parallel" != 1 && cat $1 >&3
 	exit 1
 }
 
@@ -10,14 +10,14 @@ function check_compile1() {
 	mkdir bin/$1
 	pushd bin/$1 >/dev/null 2>&1
 	shift
-	if [ "$no_parallel" = 0 ]; then
+	if [ "$no_parallel" != 1 ]; then
 		exec 3>&1
 		exec >cibuild.log
 	fi
 	../../configure ${CONF_OPTS:-} "$@" 2>&1 || _die cibuild.log
 	make check 2>&1 || _die cibuild.log
 	popd >/dev/null 2>&1
-	if [ "$no_parallel" = 0 ]; then
+	if [ "$no_parallel" != 1 ]; then
 		exec >&3
 	fi
 }
@@ -65,6 +65,7 @@ if [ ${no_parallel:-0} = 0 ]; then
 		no_parallel=1
 	fi
 fi
+export no_parallel
 
 #./autogen.sh -v
 test -d bin || mkdir bin
