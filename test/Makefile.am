@@ -2,12 +2,14 @@ AM_CFLAGS = $(warn_flags) -isystem $(top_srcdir)/externals/cutest -I$(top_srcdir
 if DEBUG
 AM_TESTS_ENVIRONMENT = \
 	LSAN_OPTIONS=suppressions=$(top_srcdir)/misc/lsan_ignore.txt; \
-	export LSAN_OPTIONS;
+	EXEEXT=$(EXEEXT); \
+	srcdir=$(srcdir); \
+	export LSAN_OPTIONS EXEEXT;
 else
 AM_TESTS_ENVIRONMENT =
 endif
 
-TESTS = pbmcore_test pbmcodec_test pbmfilter_test
+TESTS = pbmcore_test pbmcodec_test pbmfilter_test codec/codec_count_test.sh
 check_PROGRAMS = pbmcore_test pbmcodec_test pbmfilter_test
 LDADD = ../externals/libcutest.a
 
