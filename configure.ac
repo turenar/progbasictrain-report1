@@ -171,6 +171,8 @@ if test "$maintainer_mode" = true; then
 	# -fsanitize=leak fails with linker error (-llsan is not found)
 	AX_CHECK_COMPILE_FLAG([-fsanitize=leak],
 						  [AX_CHECK_LINK_FLAG([-fsanitize=leak], [AX_APPEND_FLAG([-fsanitize=leak], [])])], [])
+	AX_CHECK_COMPILE_FLAG([-fsanitize=address],
+						  [AX_CHECK_LINK_FLAG([-fsanitize=address], [AX_APPEND_FLAG([-fsanitize=address], [])])], [])
 fi
 
 AC_ARG_ENABLE(coverage,
