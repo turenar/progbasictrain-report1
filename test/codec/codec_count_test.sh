@@ -12,7 +12,7 @@ function assert_count() {
 	local expected exitcode
 	expected=$1
 	shift
-	c=$(../src/general_filter${EXEEXT:-} "$@")
+	c=$(../src/general_filter${EXEEXT:-} "$@" | tr -d '\r')
 	exitcode=$?
 	test ${exitcode} -eq 0 || _die ${exitcode} "command failed; cmd='$*'"
 	test ${c} -eq ${expected} || _die 1 "assertion failed; expected=${expected}, actual=${c}; cmd='$*'"
