@@ -47,7 +47,8 @@ static void test_pbmfilter_noise_invert(CuTest* tc) {
 		memset(*row_p++, 0, sizeof(uint8_t) * (size_t) in.width);
 	}
 
-	char* args[] = {"1.0", NULL};
+	char arg[] = "1.0";
+	char* args[] = {arg, NULL};
 	CuAssertIntEquals(tc, PBM_SUCCESS, pbmfilter_noise(&in, &out, args));
 
 	CuAssertIntEquals(tc, in.width, out.width);
@@ -78,7 +79,8 @@ static void test_pbmfilter_noise_asis(CuTest* tc) {
 		memset(*row_p++, 0, sizeof(uint8_t) * (size_t) in.width);
 	}
 
-	char* args[] = {"0", NULL};
+	char arg[] = "0";
+	char* args[] = {arg, NULL};
 	CuAssertIntEquals(tc, PBM_SUCCESS, pbmfilter_noise(&in, &out, args));
 
 	CuAssertIntEquals(tc, in.width, out.width);
@@ -108,7 +110,8 @@ static void test_pbmfilter_noise_invalid_arg(CuTest* tc) {
 		memset(*row_p++, 0, sizeof(uint8_t) * (size_t) in.width);
 	}
 
-	char* args[] = {"invalid", NULL};
+	char arg[] = "invalid";
+	char* args[] = {arg, NULL};
 	CuAssertIntEquals(tc, PBMFILTER_INVALID_ARG, pbmfilter_noise(&in, &out, args));
 	pbm_free(&in);
 	pbm_free(&out);
