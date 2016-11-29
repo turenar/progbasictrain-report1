@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 function _die() {
 	local exitcode msg
