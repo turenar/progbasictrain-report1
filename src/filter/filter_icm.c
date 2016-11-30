@@ -4,7 +4,7 @@
 #include "filters.h"
 
 #define ICM_BETA 1
-#define ICM_GAMMA 5
+#define ICM_GAMMA 2
 #define ICM_RADIUS 1
 
 static uint8_t search_lower_energy_value(const pbm_info*, int x, int y);
