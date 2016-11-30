@@ -15,7 +15,15 @@ function check_compile1() {
 		exec >cibuild.log
 	fi
 	../../configure ${CONF_OPTS:-} "$@" 2>&1 || _die cibuild.log
-	make check 2>&1 || _die cibuild.log
+	make 2>&1 || _die cibuild.log
+	if ! make check 2>&1; then
+		if [ "$no_parallel" = 1 ]; then
+			test_failed=1
+		else
+			cat cibuild.log >&3
+			exit 1
+		fi
+	fi
 	popd >/dev/null 2>&1
 	if [ "$no_parallel" != 1 ]; then
 		exec >&3
@@ -66,6 +74,7 @@ if [ ${no_parallel:-0} = 0 ]; then
 	fi
 fi
 export no_parallel
+test_failed=0
 
 #./autogen.sh -v
 test -d bin || mkdir bin
@@ -103,4 +112,10 @@ if which gcovr >/dev/null 2>&1; then
 	proj_dir="$(pwd)"
 	dot_dir="$(echo "${proj_dir}" | sed -e 's|/|.|g')"
 	sed -i.bak -e "s@${proj_dir}/@@g" -e "s@${dot_dir}@@g" bin/cibuild-coverage/src/coverage.xml
+fi
+
+if [ $test_failed -ne 0 ]; then
+	exit 201
+else
+	exit 0
 fi
