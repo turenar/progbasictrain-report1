@@ -14,14 +14,19 @@ pbm_error_t pbmfilter_noise(const pbm_info* in, pbm_info* out, char** args) {
 	}
 
 	double prob = 0.1;
-	if (args[0] != NULL) {
+	char* arg = args[0];
+	if (arg != NULL) {
 		char* endptr;
-		prob = strtod(args[0], &endptr);
+		if (arg[0] == '\0') {
+			LOG(error, "invalid argument[0]: empty");
+			return PBMFILTER_INVALID_ARG;
+		}
+		prob = strtod(arg, &endptr);
 		if (*endptr != '\0') {
-			LOG(error, "invalid argument[0]: not double (%s)", args[0]);
+			LOG(error, "invalid argument[0]: not double (%s)", arg);
 			return PBMFILTER_INVALID_ARG;
 		} else if (prob < 0. || 1. < prob) {
-			LOG(error, "pbmfilter_noise: invalid argument[0]: not probability (%s)", args[0]);
+			LOG(error, "pbmfilter_noise: invalid argument[0]: not probability (%s)", arg);
 			return PBMFILTER_INVALID_ARG;
 		}
 	}

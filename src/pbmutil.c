@@ -26,6 +26,11 @@ pbm_error_t pbm_parse_filter_str(const char* str, filter_info* filter) {
 		if (*p == ':') {
 			*p++ = '\0';
 			*args_p++ = p;
+			if (*p == '\0') {
+				LOG(debug, "no text argument is found; str=%s, args[-1]=%s, args[-0]=%s",
+				    args_str, *(args_p - 2), *(args_p - 1));
+				break;
+			}
 		}
 	}
 	*args_p = NULL;
