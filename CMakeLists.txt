@@ -30,5 +30,5 @@ add_executable(pbmcodec_test EXCLUDE_FROM_ALL
 include_directories(pbmcodec_test src)
 add_executable(pbmfilter_test EXCLUDE_FROM_ALL
         test/filter/filter_noise_test.c test/filter/test_pbmfilter.c test/filter/test_pbmfilter.h test/filter/filter_diff_test.c
-        test/test_main.c test/test_main.h test/filter/filter_icm_test.c)
+        test/test_main.c test/test_main.h test/filter/filter_icm_test.c test/filter/filter_icm2_test.c)
 include_directories(pbmfilter_test src)

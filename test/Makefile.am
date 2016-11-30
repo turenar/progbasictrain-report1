@@ -28,5 +28,6 @@ pbmfilter_test_SOURCES = test_main.c \
 						 filter/test_pbmfilter.c \
 						 filter/filter_noise_test.c \
 						 filter/filter_diff_test.c \
-						 filter/filter_icm_test.c
+						 filter/filter_icm_test.c \
+						 filter/filter_icm2_test.c
 pbmfilter_test_LDADD = ../src/libpbmfilter.la $(LDADD)
