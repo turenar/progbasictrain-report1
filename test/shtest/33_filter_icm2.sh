@@ -3,10 +3,10 @@ b=$(_pass _call -i"${pbmdir}/99_image2.pbm" -tcount diff1 icm2:b=1 diff2)
 c=$(_pass _call -i"${pbmdir}/99_image2.pbm" -tcount diff1 icm2:g=2 diff2)
 d=$(_pass _call -i"${pbmdir}/99_image2.pbm" -tcount diff1 icm2:r=1 diff2)
 e=$(_pass _call -i"${pbmdir}/99_image2.pbm" -tcount diff1 icm2:t=flat diff2)
-_pass test $a -eq $b
-_pass test $a -eq $c
-_pass test $a -eq $d
-_pass test $a -eq $e
+_pass test $a = $b
+_pass test $a = $c
+_pass test $a = $d
+_pass test $a = $e
 _pass _call -i"${pbmdir}/99_image2.pbm" -tcount diff1 icm2:b=2:g=11:r=2:t=dia diff2
 _pass _call -i"${pbmdir}/99_image2.pbm" -tcount diff1 icm2:b=2:g=5:r=1:t=circle diff2
 _pass _call -i"${pbmdir}/99_image2.pbm" -tcount diff1 icm2:b=2:g=16:r=2:t=square diff2
