@@ -70,9 +70,10 @@ static int get_energy_with_value(const pbm_info* info, int x, int y, int value) 
 
 static int fit_position(int v, int max) {
 	if (v < 0) {
-		v += max;
+		return 0;
 	} else if (v >= max) {
-		v -= max;
+		return max - 1;
+	} else {
+		return v;
 	}
-	return v;
 }

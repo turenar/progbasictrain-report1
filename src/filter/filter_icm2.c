@@ -163,10 +163,13 @@ static int get_energy_with_value(const pbm_info* info, icm_param param, int x, i
 }
 
 static int fit_position(int v, int max) {
-	if (v < 0 || v >= max) {
-		v = 0;
+	if (v < 0) {
+		return 0;
+	} else if (v >= max) {
+		return max - 1;
+	} else {
+		return v;
 	}
-	return v;
 }
 
 static double get_mag_from_param(icm_param param, int dx, int dy) {
