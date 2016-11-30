@@ -1,6 +1,8 @@
 #include "config.inc.h"
 
+#include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 #include <getopt.h>
 #include "pbmutil.h"
 #include "codec/codecs.h"
@@ -63,7 +65,8 @@ int main(int argc, char** argv) {
 		if (!is_virtual_pipe_name(opts.infile_name)) {
 			infile = fopen(opts.infile_name, "rb");
 			if (!infile) {
-				perror(opts.infile_name);
+				LOG(error, "open for read failed");
+				LOG(error, "%s: %s", opts.infile_name, strerror(errno));
 				return 1;
 			}
 			if (!opts.reader) {
@@ -78,7 +81,8 @@ int main(int argc, char** argv) {
 		if (!is_virtual_pipe_name(opts.outfile_name)) {
 			outfile = fopen(opts.outfile_name, "wb");
 			if (!outfile) {
-				perror(opts.outfile_name);
+				LOG(error, "open for write failed");
+				LOG(error, "%s: %s", opts.outfile_name, strerror(errno));
 				return 1;
 			}
 			if (!opts.writer) {
