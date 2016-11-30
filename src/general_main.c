@@ -109,10 +109,12 @@ int main(int argc, char** argv) {
 
 	pbm_info a;
 	pbm_info b;
-	pbm_info* prev = &a;
-	pbm_info* next = &b;
+	pbm_info* prev;
+	pbm_info* next;
 	pbm_init(&a);
 	pbm_init(&b);
+	prev = &a;
+	next = &b;
 
 	if (opts.reader(prev, infile)) {
 		goto pbm_error;
