@@ -50,17 +50,19 @@ static void test_pbmfilter_icm2_equals_icm_without_args(CuTest* tc) {
 
 
 	char* args[] = {NULL};
+	char buf[256];
 	CuAssertIntEquals(tc, PBM_SUCCESS, pbmfilter_noise(&orig, &in, args));
 
-	CuAssertIntEquals(tc, PBM_SUCCESS, pbmfilter_icm(&orig, &res1, args));
-	CuAssertIntEquals(tc, PBM_SUCCESS, pbmfilter_icm2(&orig, &res2, args));
+	CuAssertIntEquals(tc, PBM_SUCCESS, pbmfilter_icm(&in, &res1, args));
+	CuAssertIntEquals(tc, PBM_SUCCESS, pbmfilter_icm2(&in, &res2, args));
 	uint8_t** row1_p = res1.data;
 	uint8_t** row2_p = res2.data;
 	for (int y = 0; y < orig.height; ++y) {
 		uint8_t* col1_p = *row1_p++;
 		uint8_t* col2_p = *row2_p++;
 		for (int x = 0; x < orig.width; ++x) {
-			CuAssertIntEquals(tc, *col1_p++, *col2_p++);
+			sprintf(buf, "%d,%d", x, y);
+			CuAssertIntEquals_Msg(tc, buf, *col1_p++, *col2_p++);
 		}
 	}
 
