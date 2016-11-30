@@ -140,7 +140,7 @@ pbm_error_t pbmcodec_png_write(const pbm_info* info, FILE* fp) {
 	png_init_io(png_ptr, fp);
 	png_set_IHDR(png_ptr, info_ptr, (png_uint_32) info->width, (png_uint_32) info->height, 8, PNG_COLOR_TYPE_GRAY,
 	             PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
-	png_bytepp rows = png_malloc(png_ptr, sizeof(png_bytep) * (size_t) info->height);
+	png_bytepp rows = (png_bytepp) png_malloc(png_ptr, sizeof(png_bytep) * (size_t) info->height);
 	if (rows == NULL) {
 		goto error;
 	}
@@ -151,7 +151,7 @@ pbm_error_t pbmcodec_png_write(const pbm_info* info, FILE* fp) {
 	png_bytepp out_pp = rows;
 	uint8_t** in_pp = info->data;
 	for (int y = 0; y < info->height; y++) {
-		if ((*out_pp = png_malloc(png_ptr, row_size)) == NULL) {
+		if ((*out_pp = (png_bytep) png_malloc(png_ptr, row_size)) == NULL) {
 			goto error;
 		}
 		png_bytep out_p = *out_pp++;
