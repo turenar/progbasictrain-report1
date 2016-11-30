@@ -97,7 +97,7 @@ check_compile cibuild-native+cps  CC=clang --without-gtk3
 check_compile cibuild-native+cs   CC=clang --without-gtk3 --without-libpng
 check_compile cibuild-native+cp   CC=clang --without-gtk3 --without-libsixel
 check_compile cibuild-native+c    CC=clang --without-gtk3 --without-libsixel --without-libpng
-check_compile cibuild-native+xx  CC=g++ CFLAGS='-std=c++11' --without-gtk3 --without-libsixel --without-libpng
+check_compile cibuild-native+xx   CC=g++ CFLAGS='-std=c++11'
 
 if ${parallel_pid+:} false; then
 	exec 9>&-
