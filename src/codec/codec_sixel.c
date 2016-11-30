@@ -15,7 +15,7 @@ pbm_error_t pbmcodec_sixel_write(const pbm_info* info, FILE* fp) {
 	// fp の fd で乗っ取る
 	dup2(fileno(fp), STDOUT_FILENO);
 
-	unsigned char* data = malloc(sizeof(unsigned char) * (size_t) (info->width * info->height));
+	unsigned char* data = (unsigned char*) malloc(sizeof(unsigned char) * (size_t) (info->width * info->height));
 	if (!data) {
 		LOG(error, "allocation failed");
 		return PBM_ALLOCATION_FAILED;

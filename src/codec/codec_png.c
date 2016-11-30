@@ -66,18 +66,21 @@ pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 
 	pbm_resize(info, (int) png_get_image_width(png_ptr, info_ptr), (int) png_get_image_height(png_ptr, info_ptr));
 	uint8_t** row_p;
-	row_p = info->data;
-
 	png_byte color_type;
+
+	row_p = info->data;
 	color_type = png_get_color_type(png_ptr, info_ptr);
 	if (color_type == PNG_COLOR_TYPE_RGB) {
 		LOG(warn, "converting rgb png to gray");
 	}
 	assert(color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_RGB);
 
-	png_byte bit_depth = png_get_bit_depth(png_ptr, info_ptr);
-	png_bytepp rows = png_get_rows(png_ptr, info_ptr);
-	png_byte threshold = (png_byte) (1 << (bit_depth - 1));
+	png_byte bit_depth;
+	png_bytepp rows;
+	png_byte threshold;
+	bit_depth = png_get_bit_depth(png_ptr, info_ptr);
+	rows = png_get_rows(png_ptr, info_ptr);
+	threshold = (png_byte) (1 << (bit_depth - 1));
 	switch (color_type) {
 		case PNG_COLOR_TYPE_GRAY:
 			for (int y = 0; y < info->height; ++y) {
@@ -140,16 +143,21 @@ pbm_error_t pbmcodec_png_write(const pbm_info* info, FILE* fp) {
 	png_init_io(png_ptr, fp);
 	png_set_IHDR(png_ptr, info_ptr, (png_uint_32) info->width, (png_uint_32) info->height, 8, PNG_COLOR_TYPE_GRAY,
 	             PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
-	png_bytepp rows = (png_bytepp) png_malloc(png_ptr, sizeof(png_bytep) * (size_t) info->height);
+	png_bytepp rows = NULL;
+	rows = (png_bytepp) png_malloc(png_ptr, sizeof(png_bytep) * (size_t) info->height);
 	if (rows == NULL) {
 		goto error;
 	}
 	png_set_rows(png_ptr, info_ptr, rows);
 	memset(rows, 0, sizeof(png_bytep) * (size_t) info->height);
-	size_t row_size = sizeof(png_byte) * (size_t) info->width;
 
-	png_bytepp out_pp = rows;
-	uint8_t** in_pp = info->data;
+	size_t row_size;
+	png_bytepp out_pp;
+	uint8_t** in_pp;
+
+	row_size = sizeof(png_byte) * (size_t) info->width;
+	out_pp = rows;
+	in_pp = info->data;
 	for (int y = 0; y < info->height; y++) {
 		if ((*out_pp = (png_bytep) png_malloc(png_ptr, row_size)) == NULL) {
 			goto error;

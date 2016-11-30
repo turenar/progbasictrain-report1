@@ -17,7 +17,7 @@ pbm_error_t pbmcodec_gtk_write(const pbm_info* info, FILE* fp) {
 	gtk_init(0, NULL);
 
 	gsize allocation_size = 3u * sizeof(guint8) * (gsize) (info->height * info->width);
-	guint8* rgb_image = g_malloc(allocation_size);
+	guint8* rgb_image = (guint8*) g_malloc(allocation_size);
 	guint8* out_p = rgb_image;
 	uint8_t** row_p = info->data;
 	for (int y = 0; y < info->height; ++y) {
