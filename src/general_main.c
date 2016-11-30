@@ -67,7 +67,8 @@ int main(int argc, char** argv) {
 			if (!infile) {
 				LOG(error, "open for read failed");
 				LOG(error, "%s: %s", opts.infile_name, strerror(errno));
-				return 1;
+				result = 1;
+				goto opt_error;
 			}
 			if (!opts.reader) {
 				opts.reader = pbmcodec_get_reader(get_filename_extension(opts.infile_name));
@@ -83,7 +84,8 @@ int main(int argc, char** argv) {
 			if (!outfile) {
 				LOG(error, "open for write failed");
 				LOG(error, "%s: %s", opts.outfile_name, strerror(errno));
-				return 1;
+				result = 1;
+				goto opt_error;
 			}
 			if (!opts.writer) {
 				opts.writer = pbmcodec_get_writer(get_filename_extension(opts.outfile_name));
@@ -96,11 +98,13 @@ int main(int argc, char** argv) {
 
 	if (!opts.reader) {
 		LOG(error, "you must specify -f <source-type> or -i <filename.ext>");
-		return 1;
+		result = 1;
+		goto opt_error;
 	}
 	if (!opts.writer) {
 		LOG(error, "you must specify -t <target-type> or -o <filename.ext>");
-		return 1;
+		result = 1;
+		goto opt_error;
 	}
 
 	pbm_info a;
@@ -132,9 +136,10 @@ pbm_error:
 	for (filter_info* p = opts.filters; p->args != NULL; p++) {
 		pbm_free_filter_info(p);
 	}
-	free(opts.filters);
 	pbm_free(&a);
 	pbm_free(&b);
+opt_error:
+	free(opts.filters);
 	return result;
 }
 
@@ -168,12 +173,14 @@ static void parse_opts(int argc, char** argv, app_opts* ret) {
 				ret->reader = pbmcodec_get_reader(optarg);
 				if (!ret->reader) {
 					LOG(error, "reader not found: '%s'", optarg);
+					exit(1);
 				}
 				break;
 			case 't':
 				ret->writer = pbmcodec_get_writer(optarg);
 				if (!ret->writer) {
 					LOG(error, "writer not found: '%s'", optarg);
+					exit(1);
 				}
 				break;
 			case 'h':
