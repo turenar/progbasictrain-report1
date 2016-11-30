@@ -32,12 +32,16 @@ pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 		LOG(error, "invalid signature");
 		return PBMCODEC_INVALID_SIGNATURE;
 	}
-	png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, user_error_fn, user_warning_fn);
+
+	png_structp png_ptr = NULL;
+	png_infop info_ptr = NULL;
+
+	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, user_error_fn, user_warning_fn);
 	if (!png_ptr) {
 		LOG(error, "libpng initialization failed");
 		return PBM_SYSTEM_ERROR;
 	}
-	png_infop info_ptr = png_create_info_struct(png_ptr);
+	info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr) {
 		LOG(error, "libpng initialization failed");
 		result = PBM_SYSTEM_ERROR;
@@ -61,9 +65,11 @@ pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 	}
 
 	pbm_resize(info, (int) png_get_image_width(png_ptr, info_ptr), (int) png_get_image_height(png_ptr, info_ptr));
-	uint8_t** row_p = info->data;
+	uint8_t** row_p;
+	row_p = info->data;
 
-	png_byte color_type = png_get_color_type(png_ptr, info_ptr);
+	png_byte color_type;
+	color_type = png_get_color_type(png_ptr, info_ptr);
 	if (color_type == PNG_COLOR_TYPE_RGB) {
 		LOG(warn, "converting rgb png to gray");
 	}
