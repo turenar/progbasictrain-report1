@@ -84,22 +84,37 @@ static pbm_error_t parse_args(char** args, icm_param* param) {
 		} else if (arg[1] != '=') {
 			LOG(error, "invalid arg: '%s'", arg);
 			return PBMFILTER_INVALID_ARG;
+		} else if (arg[2] == '\0') {
+			LOG(error, "invalid arg: '%s'", arg);
+			return PBMFILTER_INVALID_ARG;
 		}
 		char* opt = arg + 2;
 		char* endptr = NULL;
 		switch (arg[0]) {
 			case 'b': {
 				int b = (int) strtol(opt, &endptr, 10);
+				if (b < 0) {
+					LOG(error, "b must be >= 0 but %d", b);
+					return PBMFILTER_INVALID_ARG;
+				}
 				param->beta = b;
 				break;
 			}
 			case 'g': {
 				int g = (int) strtol(opt, &endptr, 10);
+				if (g < 0) {
+					LOG(error, "g must be >= 0 but %d", g);
+					return PBMFILTER_INVALID_ARG;
+				}
 				param->gamma = g;
 				break;
 			}
 			case 'r': {
 				int r = (int) strtol(opt, &endptr, 10);
+				if (r <= 0) {
+					LOG(error, "r must be > 0 but %d", r);
+					return PBMFILTER_INVALID_ARG;
+				}
 				param->search_radius = r;
 				break;
 			}
