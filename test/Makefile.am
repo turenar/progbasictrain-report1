@@ -11,7 +11,11 @@ AM_TESTS_ENVIRONMENT+= \
 	srcdir=$(srcdir); \
 	export EXEEXT srcdir;
 
-TESTS = pbmcore_test pbmcodec_test pbmfilter_test codec/codec_count_test.sh
+TESTS = pbmcore_test \
+		pbmcodec_test \
+		pbmfilter_test \
+		codec/codec_count_test.sh \
+		general_filter_test.sh
 check_PROGRAMS = pbmcore_test pbmcodec_test pbmfilter_test
 LDADD = ../externals/libcutest.a
 
