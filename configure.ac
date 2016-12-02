@@ -160,7 +160,7 @@ AC_MSG_RESULT([$opencv_support])
 if test "x$opencv_support" = xno; then
 	: do nothing
 else
-	MY_CHECK_MODULES_LINK([opencv], [opencv], [cvCreateImage])
+	MY_CHECK_MODULES_LINK([opencv], [opencv < 3.0], [cvCreateImage])
 	if test "x$opencv_support$has_opencv" = "xyesno"; then
 		AC_MSG_ERROR([--with-opencv requires opencv])
 	fi
