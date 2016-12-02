@@ -29,3 +29,6 @@ _pass _call -i"${pbmdir}/99_image2.pbm" -tcount icm2:t=dia
 _pass _call -i"${pbmdir}/99_image2.pbm" -tcount icm2:t=circle
 xfail _call -i"${pbmdir}/99_image2.pbm" -tcount icm2:t=invalid
 xfail _call -i"${pbmdir}/99_image2.pbm" -tcount icm2:t=
+xfail _call -i"${pbmdir}/99_image2.pbm" -tcount icm2:
+xfail _call -i"${pbmdir}/99_image2.pbm" -tcount icm2:b
+xfail _call -i"${pbmdir}/99_image2.pbm" -tcount icm2:Z=
