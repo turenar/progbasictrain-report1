@@ -26,6 +26,9 @@ pbm_error_t pbmcodec_sixel_write(const pbm_info*, FILE*);
 #endif
 
 #ifdef USE_GTK
-//pbm_error_t pbmcodec_gtk_read(pbm_info*, FILE*);
 pbm_error_t pbmcodec_gtk_write(const pbm_info*, FILE*);
+#endif
+
+#ifdef USE_OPENCV
+pbm_error_t pbmcodec_cv_write(const pbm_info*, FILE*);
 #endif

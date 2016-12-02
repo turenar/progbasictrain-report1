@@ -33,7 +33,10 @@ endif
 if USE_GTK
 libpbmcodec_la_SOURCES+= codec/codec_gtk.c
 endif
-libpbmcodec_la_CFLAGS = $(AM_CFLAGS) $(libpng_CFLAGS) $(libsixel_CFLAGS) $(gtk_CFLAGS)
-libpbmcodec_la_LIBADD = libpbmcore.la $(libpng_LIBS) $(libsixel_LIBS) $(gtk_LIBS)
+if USE_OPENCV
+libpbmcodec_la_SOURCES+= codec/codec_cv.c
+endif
+libpbmcodec_la_CFLAGS = $(AM_CFLAGS) $(libpng_CFLAGS) $(libsixel_CFLAGS) $(gtk_CFLAGS) $(opencv_CFLAGS)
+libpbmcodec_la_LIBADD = libpbmcore.la $(libpng_LIBS) $(libsixel_LIBS) $(gtk_LIBS) $(opencv_LIBS)
 libpbmcore_la_SOURCES = pbm.c \
 						logger.c

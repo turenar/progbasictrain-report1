@@ -32,7 +32,10 @@ static pbmcodec_writer_info writers[] = {
 		{"sixel", pbmcodec_sixel_write, "show image in supported console with sixel format"},
 #endif
 #ifdef USE_GTK
-		{"gtk", pbmcodec_gtk_write, "show image in display"},
+		{"gtk", pbmcodec_gtk_write, "show image in display by gtk+"},
+#endif
+#ifdef USE_OPENCV
+		{"cv", pbmcodec_cv_write, "show image in display by opencv"},
 #endif
 		{"count", pbmcodec_count, "(for experts) count black pixels and show"},
 		{NULL, NULL, NULL}

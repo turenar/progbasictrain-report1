@@ -142,6 +142,36 @@ fi
 AM_CONDITIONAL([USE_GTK], [test $use_gtk = yes])
 AC_SUBST([gtk_CFLAGS])
 AC_SUBST([gtk_LIBS])
+
+AC_ARG_WITH([opencv],
+			[AS_HELP_STRING([--with-opencv],
+							[support png r/w, default: auto])],
+			[case "${withval}" in
+				yes) opencv_support=yes;;
+				no)  opencv_support=no;;
+				auto)opencv_support=auto;;
+				*)   AC_MSG_ERROR([bad value ${withval} for --with-opencv]);;
+			esac],
+			[opencv_support=auto])
+use_opencv=no
+
+AC_MSG_CHECKING([whether opencv support is required])
+AC_MSG_RESULT([$opencv_support])
+if test "x$opencv_support" = xno; then
+	: do nothing
+else
+	MY_CHECK_MODULES_LINK([opencv], [opencv], [cvCreateImage])
+	if test "x$opencv_support$has_opencv" = "xyesno"; then
+		AC_MSG_ERROR([--with-opencv requires opencv])
+	fi
+	if test "x$has_opencv" = xyes; then
+		AC_DEFINE([USE_OPENCV], [1], [opencv])
+		use_opencv=yes
+	fi
+fi
+AM_CONDITIONAL([USE_OPENCV], [test $use_opencv = yes])
+AC_SUBST([opencv_CFLAGS])
+AC_SUBST([opencv_LIBS])
 # Checks for header files.
 
 # Checks for typedefs, structures, and compiler characteristics.
