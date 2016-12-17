@@ -202,6 +202,8 @@ if test "$maintainer_mode" = true; then
 						  [AX_CHECK_LINK_FLAG([-fsanitize=leak], [AX_APPEND_FLAG([-fsanitize=leak], [])])], [])
 	AX_CHECK_COMPILE_FLAG([-fsanitize=address],
 						  [AX_CHECK_LINK_FLAG([-fsanitize=address], [AX_APPEND_FLAG([-fsanitize=address], [])])], [])
+	AX_CHECK_COMPILE_FLAG([-fstack-protector-strong],
+						  [AX_APPEND_FLAG([-fstack-protector-strong], [])], [])
 fi
 
 AC_ARG_ENABLE(coverage,
