@@ -41,7 +41,7 @@ test -d "${outdir}" && rm -rf "${outdir}"
 mkdir "${outdir}"
 
 for i in "${srcdir:-.}/shtest"/*_*.sh; do
-	printf "\e[1;32mtesting %s...\n" "$(basename "$i")"
+	printf "\e[1;32mtesting %s...\e[0m\n" "$(basename "$i")"
 	source "$i"
 done
 
