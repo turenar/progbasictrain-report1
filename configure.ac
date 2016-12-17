@@ -225,6 +225,7 @@ fi
 
 AC_SUBST([CFLAGS])
 AC_SUBST([warn_flags])
+AM_CONDITIONAL([cross_compiling], [test x$cross_compiling != xno])
 AC_CONFIG_FILES([Makefile externals/Makefile src/Makefile test/Makefile])
 AC_OUTPUT
 

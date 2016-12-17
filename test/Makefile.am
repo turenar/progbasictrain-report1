@@ -13,9 +13,11 @@ AM_TESTS_ENVIRONMENT+= \
 
 TESTS = pbmcore_test \
 		pbmcodec_test \
-		pbmfilter_test \
-		codec/codec_count_test.sh \
+		pbmfilter_test
+if !cross_compiling
+TESTS +=codec/codec_count_test.sh \
 		general_filter_test.sh
+endif
 check_PROGRAMS = pbmcore_test pbmcodec_test pbmfilter_test
 LDADD = ../externals/libcutest.a
 
