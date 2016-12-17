@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
 			if (!opts.writer) {
 				opts.writer = pbmcodec_get_writer(get_filename_extension(opts.outfile_name));
 				if (!opts.writer) {
-					LOG(error, "target type prediction failed: '%s'", optarg);
+					LOG(warn, "target type prediction failed: '%s'", optarg);
 				}
 			}
 		}
