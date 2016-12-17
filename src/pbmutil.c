@@ -38,6 +38,8 @@ pbm_error_t pbm_parse_filter_str(const char* str, filter_info* filter) {
 	pbmfilter_fn filter_fn = pbmfilter_get_filter(filter_args[0]);
 	if (!filter_fn) {
 		LOG(error, "filter not found: '%s'", filter_args[0]);
+		free(filter_args);
+		free(args_str);
 		return PBMFILTER_NOT_FOUND;
 	}
 
