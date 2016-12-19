@@ -106,6 +106,13 @@ if which gcovr >/dev/null 2>&1; then
 	sed -i.bak -e "s@${proj_dir}/@@g" -e "s@${dot_dir}@@g" bin/cibuild-coverage/src/coverage.xml
 fi
 
+cd bin/cibuild-native+psgv-debug || _die
+make package || _die
+unzip 440706.zip || _die
+cd dist || _die
+./configure || _die
+make check || _die
+
 if [ $test_failed -ne 0 ]; then
 	exit 201
 else
