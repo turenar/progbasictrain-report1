@@ -31,7 +31,7 @@ pbm_error_t pbmfilter_diff2(const pbm_info* in, pbm_info* out, char** args) {
 
 	pbm_resize(out, in->width, in->height);
 
-	uint8_t** orig_row_p = diff_original.data;
+	uint8_t** orig_row_p = diff_original.data; // [in]
 	uint8_t** in_row_p = in->data;
 	uint8_t** out_row_p = out->data;
 	for (int y = 0; y < diff_original.height; ++y) {
@@ -42,6 +42,7 @@ pbm_error_t pbmfilter_diff2(const pbm_info* in, pbm_info* out, char** args) {
 			*out_col_p++ = (uint8_t) (*orig_col_p++ != *in_col_p++);
 		}
 	}
+	// 次のdiff1呼び出しに備える
 	pbm_free(&diff_original);
 	return PBM_SUCCESS;
 }

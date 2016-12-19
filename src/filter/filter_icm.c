@@ -6,10 +6,26 @@
 #define ICM_BETA 1
 #define ICM_GAMMA 2
 #define ICM_RADIUS 1
+#define ICM_PATIENCE 16
 
+/**
+ * 指定した座標で、エネルギー関数が小さくなるような値を返す
+ * @return エネルギー関数が小さい値
+ */
 static uint8_t search_lower_energy_value(const pbm_info*, int x, int y);
+/**
+ * 指定した座標が指定された値だった場合のエネルギー値を返す
+ * @return エネルギー値
+ */
 static int get_energy_with_value(const pbm_info*, int x, int y, int value);
-static int fit_position(int v, int max);
+/**
+ * 座標として使用できる値にクリップする。
+ * 
+ * @param v クリップする値。-max <= v < 2*max
+ * @param exclusive_max 最大値 (この値は返り値に含まれない)
+ * @return 0 <= ret < max
+ */
+static int fit_position(int v, int exclusive_max);
 
 pbm_error_t pbmfilter_icm(const pbm_info* in, pbm_info* out, char** args) {
 	UNUSED_VAR(args);
@@ -32,7 +48,7 @@ pbm_error_t pbmfilter_icm(const pbm_info* in, pbm_info* out, char** args) {
 				col_p++;
 			}
 		}
-	} while (updated > 16); //TODO
+	} while (updated > ICM_PATIENCE); //TODO
 
 	return PBM_SUCCESS;
 }
@@ -68,11 +84,11 @@ static int get_energy_with_value(const pbm_info* info, int x, int y, int value) 
 	return energy;
 }
 
-static int fit_position(int v, int max) {
+static int fit_position(int v, int exclusive_max) {
 	if (v < 0) {
 		return 0;
-	} else if (v >= max) {
-		return max - 1;
+	} else if (v >= exclusive_max) {
+		return exclusive_max - 1;
 	} else {
 		return v;
 	}

@@ -30,6 +30,7 @@ pbm_error_t pbmfilter_noise(const pbm_info* in, pbm_info* out, char** args) {
 			return PBMFILTER_INVALID_ARG;
 		}
 	}
+
 	pbmfilter_apply(in, out, _pbmfilter_noise_point, (void*) &prob);
 	return PBM_SUCCESS;
 }

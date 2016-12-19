@@ -13,15 +13,26 @@
 #define ICM_DEFAULT_WEIGHT_METHOD ICM_WEIGHT_FLAT
 #define ICM_LOOP_LIMIT 100
 
+/**
+ * いわゆるbeta値として用いる重み付け関数
+ */
 typedef enum {
-	ICM_WEIGHT_FLAT = 0, ICM_WEIGHT_SQUARE, ICM_WEIGHT_DIA, ICM_WEIGHT_CIRCLE,
-	ICM_WEIGHT_INVALID = -1
+	/** フラット (すべての点で同じ重み付け) */
+			ICM_WEIGHT_FLAT = 0,
+	/** max(dx, dy)に反比例した重み付け */
+			ICM_WEIGHT_SQUARE,
+	/** dx+dy に反比例した重み付け */
+			ICM_WEIGHT_DIA,
+	/** sqrt(dx*dx + dy*dy) に反比例した重み付け */
+			ICM_WEIGHT_CIRCLE,
+	/** 番兵 */
+			ICM_WEIGHT_INVALID = -1
 } icm_weight_method;
 
 typedef struct icm_param_tag {
 	int beta;
 	int gamma;
-	int search_radius;
+	int search_radius; // 半径となっているが実際には重み付けに使用する範囲をmax(dx,dy) <= search_radiusに限定するだけのパラメータ
 	icm_weight_method type;
 } icm_param;
 
@@ -29,6 +40,8 @@ typedef struct {
 	const char* name;
 	icm_weight_method method;
 } name_method_map_t;
+
+// めんどくさいのでテーブルにメソッド名を保持する
 name_method_map_t name_method_map[] = {
 		{"flat",   ICM_WEIGHT_FLAT},
 		{"square", ICM_WEIGHT_SQUARE},
@@ -36,10 +49,34 @@ name_method_map_t name_method_map[] = {
 		{"circle", ICM_WEIGHT_CIRCLE},
 		{NULL, ICM_DEFAULT_WEIGHT_METHOD}};
 
+/**
+ * 引数のパース
+ * @param args 引数配列
+ * @param param パラメータ
+ * @return エラー
+ */
 static pbm_error_t parse_args(char** args, icm_param* param);
+/**
+ * 指定した座標で、エネルギー関数が小さくなるような値を返す
+ * @return エネルギー関数が小さい値
+ */
 static uint8_t search_lower_energy_value(const pbm_info*, icm_param, int x, int y);
+/**
+ * 指定した座標が指定された値だった場合のエネルギー値を返す
+ * @return エネルギー値
+ */
 static int get_energy_with_value(const pbm_info*, icm_param, int x, int y, int value);
+/**
+ * @return 重み付け係数
+ */
 static double get_mag_from_param(icm_param, int dx, int dy);
+/**
+ * 座標として使用できる値にクリップする。
+ *
+ * @param v クリップする値。-max <= v < 2*max
+ * @param exclusive_max 最大値 (この値は返り値に含まれない)
+ * @return 0 <= ret < max
+ */
 static int fit_position(int v, int max);
 
 pbm_error_t pbmfilter_icm2(const pbm_info* in, pbm_info* out, char** args) {
@@ -51,7 +88,7 @@ pbm_error_t pbmfilter_icm2(const pbm_info* in, pbm_info* out, char** args) {
 		return arg_result;
 	}
 
-	pbm_copy(in, out);
+	pbm_copy(in, out); // resizeは必要ない
 
 	int updated;
 	int loop_limit = ICM_LOOP_LIMIT;
@@ -77,17 +114,18 @@ pbm_error_t pbmfilter_icm2(const pbm_info* in, pbm_info* out, char** args) {
 static pbm_error_t parse_args(char** args, icm_param* param) {
 	for (char** p = args; *p != NULL; p++) {
 		char* arg = *p;
-		if (arg[0] == '\0') {
+		// 引数の形は [bgrt]=<value>
+		if (arg[0] == '\0') { // 引数が空
 			LOG(error, "invalid arg: '(null)'");
 			return PBMFILTER_INVALID_ARG;
 		} else if (arg[1] != '=') {
 			LOG(error, "invalid arg: '%s'", arg);
 			return PBMFILTER_INVALID_ARG;
-		} else if (arg[2] == '\0') {
+		} else if (arg[2] == '\0') { // valueがない
 			LOG(error, "invalid arg: '%s'", arg);
 			return PBMFILTER_INVALID_ARG;
 		}
-		char* opt = arg + 2;
+		char* opt = arg + 2; // b=をスキップ
 		char* endptr = NULL;
 		switch (arg[0]) {
 			case 'b': {
@@ -161,6 +199,8 @@ static uint8_t search_lower_energy_value(const pbm_info* info, icm_param param, 
 static int get_energy_with_value(const pbm_info* info, icm_param param, int x, int y, int value) {
 	double energy = 0;
 
+	// search_radiusが大きくなるとループ回数が多くなるし、メモリキャッシュ的にも辛いので
+	// シーケンスに処理するようにしたほうが良かったかも
 	for (int dy = -param.search_radius; dy <= param.search_radius; ++dy) {
 		int row = fit_position(y + dy, info->height);
 		uint8_t* row_p = info->data[row];
