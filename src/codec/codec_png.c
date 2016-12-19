@@ -89,7 +89,7 @@ pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 				for (int x = 0; x < info->width; ++x) {
 					// png-grayscale 0: black 255: white (if 8bit)
 					// pbm-monochrome 0: white 1: black :-P
-					*col_p++ = (uint8_t) (*row++ <= threshold);
+					*col_p++ = (uint8_t) (*row++ < threshold);
 				}
 			}
 			break;
@@ -103,7 +103,7 @@ pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 					int r = *row++;
 					int g = *row++;
 					int b = *row++;
-					*col_p++ = (uint8_t) ((r + g + b) <= (128 * 3));
+					*col_p++ = (uint8_t) ((r + g + b) < (threshold * 3));
 				}
 			}
 			break;
