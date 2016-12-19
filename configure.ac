@@ -56,7 +56,7 @@ PKG_PROG_PKG_CONFIG
 
 AC_ARG_WITH([libpng],
 			[AS_HELP_STRING([--with-libpng],
-							[support png r/w, default: auto])],
+							[support png for r/w, default: auto])],
 			[case "${withval}" in
 				yes) libpng_support=yes;;
 				no)  libpng_support=no;;
@@ -86,7 +86,7 @@ AC_SUBST([libpng_LIBS])
 
 AC_ARG_WITH([libsixel],
 			[AS_HELP_STRING([--with-libsixel],
-							[support png r/w, default: auto])],
+							[support sixel for write, default: auto])],
 			[case "${withval}" in
 				yes) libsixel_support=yes;;
 				no)  libsixel_support=no;;
@@ -116,7 +116,7 @@ AC_SUBST([libsixel_LIBS])
 
 AC_ARG_WITH([gtk3],
 			[AS_HELP_STRING([--with-gtk3],
-							[support png r/w, default: auto])],
+							[support gtk, default: auto])],
 			[case "${withval}" in
 				yes) gtk_support=yes;;
 				no)  gtk_support=no;;
@@ -145,7 +145,7 @@ AC_SUBST([gtk_LIBS])
 
 AC_ARG_WITH([opencv],
 			[AS_HELP_STRING([--with-opencv],
-							[support png r/w, default: auto])],
+							[support opencv, default: auto])],
 			[case "${withval}" in
 				yes) opencv_support=yes;;
 				no)  opencv_support=no;;
