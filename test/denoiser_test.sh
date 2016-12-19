@@ -56,5 +56,6 @@ xfail _calln - - <"${pbmdir}/04_lf.pbm" >"${outdir}/11.pbm"
 
 xfail _calln "${outdir}/notfound.pbm" "${outdir}/21.pbm"
 xfail _calln "${pbmdir}/04_lf.pbm" "${outdir}/notfounddir/22.pbm"
+xfail _calln "${pbmdir}/01_empty.pbm" "${outdir}/23.pbm"
 
 exit 0
