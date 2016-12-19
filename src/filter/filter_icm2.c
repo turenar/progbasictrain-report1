@@ -51,7 +51,6 @@ pbm_error_t pbmfilter_icm2(const pbm_info* in, pbm_info* out, char** args) {
 		return arg_result;
 	}
 
-	pbm_resize(out, in->width, in->height);
 	pbm_copy(in, out);
 
 	int updated;
