@@ -14,6 +14,9 @@ typedef struct {
 	const char* help;
 } pbmcodec_writer_info;
 
+/**
+ * reader関数などが入っている。最後の要素の要素はすべてNULLで占めること
+ */
 static pbmcodec_reader_info readers[] = {
 		{"pbm", pbmcodec_pbm_read, "read from netpbm, bitmap"},
 #ifdef USE_LIBPNG
@@ -22,6 +25,9 @@ static pbmcodec_reader_info readers[] = {
 		{NULL, NULL, NULL}
 };
 
+/**
+ * writer関数などが入っている。最後の要素の要素はすべてNULLで占めること
+ */
 static pbmcodec_writer_info writers[] = {
 		{"pbm", pbmcodec_pbm_write, "save as netpbm, bitmap"},
 #ifdef USE_LIBPNG

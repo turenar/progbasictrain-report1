@@ -26,7 +26,7 @@ pbm_error_t pbmcodec_sixel_write(const pbm_info* info, FILE* fp) {
 	for (int y = 0; y < info->height; ++y) {
 		uint8_t* in_col_p = *in_row_p++;
 		for (int x = 0; x < info->width; ++x) {
-			*out_p++ = (unsigned char) ((*in_col_p++) ? 0 : 255);
+			*out_p++ = (unsigned char) ((*in_col_p++) ? 0 : 255); // pbm has inverted black
 		}
 	}
 

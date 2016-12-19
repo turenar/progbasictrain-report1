@@ -20,8 +20,9 @@ static void user_error_fn(png_structp, png_const_charp);
 
 pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 	png_byte header[PNG_HEADER_BYTES];
-	pbm_error_t result;
+	pbm_error_t result; // 返り値
 
+	// pngシグネチャの確認
 	if (fread(header, 1, PNG_HEADER_BYTES, fp) < sizeof(PNG_HEADER_BYTES)) {
 		LOG(error, "invalid signature");
 		return PBMCODEC_INVALID_SIGNATURE;
@@ -56,6 +57,7 @@ pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 	png_init_io(png_ptr, fp);
 	// 事前にシグネチャを読込確認済なら、ファイル先頭から読み飛ばしているバイト数を知らせる
 	png_set_sig_bytes(png_ptr, PNG_HEADER_BYTES);
+	// strip/expand == 8bit/channel強制 // strip_alpha == アルファ値破棄
 	png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_STRIP_16 | PNG_TRANSFORM_STRIP_ALPHA | PNG_TRANSFORM_EXPAND, NULL);
 
 	if (png_get_interlace_type(png_ptr, info_ptr) != PNG_INTERLACE_NONE) {
@@ -80,7 +82,7 @@ pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 	png_byte threshold;
 	bit_depth = png_get_bit_depth(png_ptr, info_ptr);
 	rows = png_get_rows(png_ptr, info_ptr);
-	threshold = (png_byte) (1 << (bit_depth - 1));
+	threshold = (png_byte) (1 << (bit_depth - 1)); // ざっくり減色用しきい値。bit_depthは8になっているはずなので、おそらく128
 	switch (color_type) {
 		case PNG_COLOR_TYPE_GRAY:
 			for (int y = 0; y < info->height; ++y) {
@@ -98,7 +100,7 @@ pbm_error_t pbmcodec_png_read(pbm_info* info, FILE* fp) {
 				uint8_t* col_p = *row_p++;
 				png_bytep row = *rows++;
 				for (int x = 0; x < info->width; ++x) {
-					// png-grayscale 0: black 255: white (if 8bit)
+					// png-rgb 0: black 255: white (if 8bit)
 					// pbm-monochrome 0: white 1: black :-P
 					int r = *row++;
 					int g = *row++;
@@ -141,6 +143,7 @@ pbm_error_t pbmcodec_png_write(const pbm_info* info, FILE* fp) {
 	}
 
 	png_init_io(png_ptr, fp);
+	// ファイルサイズ的にはgray 1bitにしたいところではあるが、packed bitの計算がちょっとめんどくさいので……
 	png_set_IHDR(png_ptr, info_ptr, (png_uint_32) info->width, (png_uint_32) info->height, 8, PNG_COLOR_TYPE_GRAY,
 	             PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 	png_bytepp rows = NULL;
@@ -191,6 +194,7 @@ static void user_error_fn(png_structp png_ptr, png_const_charp msg) {
 	UNUSED_VAR(png_ptr);
 	LOG(error, "libpng: %s", msg);
 
+	// libpngはerror_fnからreturnしないことを求めている。デフォルトの動作はlongjmpするようなのでそれに倣った。
 #if PNG_LIBPNG_VER >= 10500
 	png_longjmp(png_ptr, 1);
 #else

@@ -21,9 +21,9 @@ pbm_error_t pbmcodec_cv_write(const pbm_info* info, FILE* fp) {
 		char* out_col_p = out_row_p;
 		uint8_t* in_col_p = *in_row_p++;
 		for (int x = 0; x < info->width; ++x) {
-			*out_col_p++ = (char) (*in_col_p++ ? 0 : 255);
+			*out_col_p++ = (char) (*in_col_p++ ? 0 : 255); // channel == 1
 		}
-		out_row_p += image->widthStep;
+		out_row_p += image->widthStep; // 高速化のために行の先頭がメモリ境界？に置かれるっぽい
 	}
 
 	cvNamedWindow(WINDOW_TITLE, CV_WINDOW_AUTOSIZE);

@@ -9,13 +9,19 @@
 #include <pbm.h>
 #include "logger.h"
 
-static void free_pixels(guchar* pixels, gpointer data);
+/**
+ * g_freeするだけの関数
+ * @param pixels データ
+ * @param unused 未使用
+ */
+static void free_pixels(guchar* pixels, gpointer unused);
 
 pbm_error_t pbmcodec_gtk_write(const pbm_info* info, FILE* fp) {
 	UNUSED_VAR(fp);
 
 	gtk_init(0, NULL);
 
+	// 3u == RGB
 	gsize allocation_size = 3u * sizeof(guint8) * (gsize) (info->height * info->width);
 	guint8* rgb_image = (guint8*) g_malloc(allocation_size);
 	guint8* out_p = rgb_image;
@@ -43,11 +49,14 @@ pbm_error_t pbmcodec_gtk_write(const pbm_info* info, FILE* fp) {
 	gtk_widget_show_all(window);
 	gtk_main();
 
+	// FcFini()を呼び出すとfontconfigのalloc leakが報告されなくなるらしいけど、
+	// fontconfigを直接的に使用してないのにFcFini()を呼び出すのはどうなのだろうか
+	// どちらかというとleak sanitizer側で無視指定したほうが良さそう
 	return PBM_SUCCESS;
 }
 
-static void free_pixels(guchar* pixels, gpointer data) {
-	UNUSED_VAR(data);
+static void free_pixels(guchar* pixels, gpointer unused) {
+	UNUSED_VAR(unused);
 	g_free(pixels);
 }
 
