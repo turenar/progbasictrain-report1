@@ -12,6 +12,7 @@ static void log_log(const char* file, int line, const char* color, const char* f
 		}
 	}
 #ifdef WIN32
+	// コンソールが色表示に対応していない
 	UNUSED_VAR(color);
 	fprintf(stderr, "[%s:%d] ", filename, line);
 	vfprintf(stderr, fmt, args);

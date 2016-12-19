@@ -29,8 +29,12 @@ int main(int argc, char** argv) {
 
 	pbm_info output;
 	pbm_init(&output);
-	// argv[argc] == NULL
-	pbmfilter_noise(&input, &output, argv + 3);
-	pbmcodec_pbm_write(&output, wfp);
-	return 0;
+	// argv[argc] == NULL; argc >= 3
+	if (!pbmfilter_noise(&input, &output, argv + 3)) {
+		if (!pbmcodec_pbm_write(&output, wfp)) {
+			return 0;
+		}
+	}
+	fprintf(stderr, "error\n");
+	return 1;
 }

@@ -121,6 +121,7 @@ int main(int argc, char** argv) {
 	}
 
 	for (filter_info* p = opts.filters; p->args != NULL; p++) {
+		// p->args[0] == "filter-name"
 		if (p->fn(prev, next, p->args + 1)) {
 			goto pbm_error;
 		}

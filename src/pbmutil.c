@@ -7,8 +7,8 @@
 
 
 pbm_error_t pbm_parse_filter_str(const char* str, filter_info* filter) {
-	size_t arg_count = 2; // [0] + NULL
-	size_t args_len = 0;
+	size_t arg_count = 2; // 確保する領域の数。2 == [0] + NULL
+	size_t args_len = 0; // 文字列として確保する連続領域の長さ
 	for (const char* p = str; *p != '\0'; p++) {
 		if (*p == ':') {
 			arg_count++;
@@ -18,7 +18,10 @@ pbm_error_t pbm_parse_filter_str(const char* str, filter_info* filter) {
 
 	char* const args_str = (char*) malloc(sizeof(char) * (args_len + 1));
 	strcpy(args_str, str);
-
+	// args_str: "icm2\0t=hogefuga"
+	//            |     ^arg[1]
+	//            ^arg[0]
+	// arg[0]とargはmallocされた領域になる
 	char** const filter_args = (char**) malloc(sizeof(char*) * arg_count);
 	char** args_p = filter_args;
 	*args_p++ = args_str;

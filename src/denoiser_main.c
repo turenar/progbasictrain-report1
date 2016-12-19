@@ -29,7 +29,13 @@ int main(int argc, char** argv) {
 
 	pbm_info output;
 	pbm_init(&output);
-	pbmfilter_icm(&input, &output, argv + 3);
-	pbmcodec_pbm_write(&output, wfp);
-	return 0;
+	// argc >= 3なのでargv[>=3]のどれかにはNULLが入っているらしい
+	// icmは引数は使わないけど
+	if (!pbmfilter_icm(&input, &output, argv + 3)) {
+		if (!pbmcodec_pbm_write(&output, wfp)) {
+			return 0;
+		}
+	}
+	fprintf(stderr, "error\n");
+	return 1;
 }
