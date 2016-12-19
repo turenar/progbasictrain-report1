@@ -24,6 +24,7 @@ int main(int argc, char** argv) {
 	}
 	if (pbmcodec_pbm_read(&input, rfp)) {
 		fprintf(stderr, "error\n");
+		pbm_free(&input);
 		return 1;
 	}
 
@@ -33,9 +34,13 @@ int main(int argc, char** argv) {
 	// icmは引数は使わないけど
 	if (!pbmfilter_icm(&input, &output, argv + 3)) {
 		if (!pbmcodec_pbm_write(&output, wfp)) {
+			pbm_free(&input);
+			pbm_free(&output);
 			return 0;
 		}
 	}
 	fprintf(stderr, "error\n");
+	pbm_free(&input);
+	pbm_free(&output);
 	return 1;
 }

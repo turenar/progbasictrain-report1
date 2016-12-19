@@ -24,6 +24,7 @@ int main(int argc, char** argv) {
 	}
 	if (pbmcodec_pbm_read(&input, rfp)) {
 		fprintf(stderr, "error\n");
+		pbm_free(&input);
 		return 1;
 	}
 
@@ -32,9 +33,13 @@ int main(int argc, char** argv) {
 	// argv[argc] == NULL; argc >= 3
 	if (!pbmfilter_noise(&input, &output, argv + 3)) {
 		if (!pbmcodec_pbm_write(&output, wfp)) {
+			pbm_free(&input);
+			pbm_free(&output);
 			return 0;
 		}
 	}
+	pbm_free(&input);
+	pbm_free(&output);
 	fprintf(stderr, "error\n");
 	return 1;
 }
