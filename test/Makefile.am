@@ -16,6 +16,8 @@ TESTS = pbmcore_test \
 		pbmfilter_test
 if !cross_compiling
 TESTS +=codec/codec_count_test.sh \
+		noiser_test.sh \
+		denoiser_test.sh \
 		general_filter_test.sh
 endif
 check_PROGRAMS = pbmcore_test pbmcodec_test pbmfilter_test
